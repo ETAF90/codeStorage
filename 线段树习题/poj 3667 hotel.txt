@@ -1,0 +1,133 @@
+/*
+*	9090259 030902414 3667 Accepted 3216K 641MS C++ 2849B 2011-08-05 22:49:40 
+*/
+#include<cstdio>
+#include<cmath>
+#include<cstring>
+#include<iostream>
+#include<string>
+#include<algorithm>
+#include<vector>
+#include<queue>
+#include<stack>
+#include<functional>
+#include<set>
+#include<map>
+using namespace std;
+#define L(i) (i<<1)
+#define R(i) ((i<<1)+1)
+inline int Mid(int x,int y)
+{return (x+y)>>1;}
+inline int Max(int x,int y)
+{return x>y?x:y;}
+const int N=50001;
+struct node
+{
+    int l,r,ll,rr,sum,cover;
+}a[N*3];
+void build(int i,int left,int right)
+{
+    a[i].l=left;
+    a[i].r=right;
+    a[i].ll=a[i].rr=a[i].sum=right-left+1;
+    a[i].cover=0;
+    if(left==right)
+        return ;
+    int mid=(left+right)>>1;
+    build(L(i),left,mid);
+    build(R(i),mid+1,right);
+}
+int query(int i,int d)
+{
+    
+    if(a[i].sum<d)return 0;
+    if(a[i].cover==0)return a[i].l;
+    if(a[i].cover==1)return 0;
+	int li=L(i);
+    int ri=R(i);
+    if(a[li].sum>=d)
+         return query(li,d);
+	else if(a[li].rr+a[ri].ll>=d)
+        return (Mid(a[i].l,a[i].r)-a[li].rr+1);
+	else
+        return query(ri,d);
+	return 0;
+}
+void update_sum(int i)
+{
+   if(a[i].cover==0)
+    a[i].ll=a[i].rr=a[i].sum=a[i].r-a[i].l+1;
+   else
+    a[i].ll=a[i].rr=a[i].sum=0;
+}
+void update_cover(int i)
+{
+    if(a[L(i)].cover==0 && a[R(i)].cover==0)
+        a[i].cover=0;
+    else if(a[L(i)].cover==1 && a[R(i)].cover==1)
+        a[i].cover=1;
+    else
+        a[i].cover=-1;
+}
+void update(int i,int left,int right,int cover)
+{
+    if(a[i].cover==cover)
+        return;
+    if(a[i].l==left && a[i].r==right)
+    {
+        a[i].cover=cover;
+        update_sum(i);
+        return ;
+    }
+    int li,ri;
+    li=L(i);
+    ri=R(i);
+    if(a[i].cover!=-1)
+	{
+		 a[li].cover=a[ri].cover=a[i].cover;
+		 update_sum(li);update_sum(ri);	
+	}
+    int mid=Mid(a[i].l,a[i].r);
+    if(right<=mid)
+        update(li,left,right,cover);
+    else
+        if(left>mid)
+            update(ri,left,right,cover);
+        else
+        {
+            update(li,left,mid,cover);
+            update(ri,mid+1,right,cover);
+        }
+    update_cover(i);
+    a[i].ll=a[li].ll+(a[li].cover==0?a[ri].ll:0);
+    a[i].rr=a[ri].rr+(a[ri].cover==0?a[li].rr:0);
+    a[i].sum=Max(Max(a[li].sum,a[ri].sum),a[li].rr+a[ri].ll);
+}
+
+int main()
+{
+  //  freopen("test.txt","r",stdin);
+    int n,m,x,d,op;
+    while(scanf("%d%d",&n,&m)!=EOF)
+    {
+        build(1,1,n);
+        while(m--)
+        {
+            scanf("%d",&op);
+            if(op==1)
+            {
+                scanf("%d",&d);
+                x=query(1,d);
+                if(x)
+                    update(1,x,x+d-1,1);
+                printf("%d\n",x);
+            }
+            else
+            {
+                scanf("%d%d",&x,&d);
+                update(1,x,x+d-1,0);
+            }
+        }
+    }
+    return 0;
+}

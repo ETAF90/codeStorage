@@ -1,0 +1,102 @@
+/*
+	本题求最大独立集。
+=> 二分图是这样一个图，它的顶点可以分类两个集合X和Y，所有的边关联在两个顶点中，恰好一个属于集合Ｘ，另一个属于集合Ｙ。 
+
+=> 最大匹配： 图中包含边数最多的匹配称为图的最大匹配。  
+
+=> 完美匹配： 如果所有点都在匹配边上，称这个最大匹配是完美匹配。 
+
+=> 最小覆盖： 最小覆盖要求用最少的点（Ｘ集合或Ｙ集合的都行）让每条边都至少和其中一个点关联。可以证明：最少的点（即覆盖数）＝最大匹配数 
+
+=> 最小路径覆盖： 
+用尽量少的不相交简单路径覆盖有向无环图Ｇ的所有结点。解决此类问题可以建立一个二分图模型。把所有顶点i拆成两个：Ｘ结点集中的i和Y结点集中的i',如果有边i->j，则在二分图中引入边i->j'，设二分图最大匹配为m,则结果就是n-m。 
+
+=> 最大独立集问题： 
+在Ｎ个点的图G中选出m个点，使这m个点两两之间没有边．求m最大值． 
+如果图Ｇ满足二分图条件，则可以用二分图匹配来做．最大独立集点数 = N - 最大匹配数 
+
+*/
+
+
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<vector>
+using namespace std;
+const int N=501;
+
+int n;
+vector<int> g[N];
+int mat[N],color[N],vis[N];
+void init(){
+
+	for(int i=0;i<n;++i){
+		g[i].clear();
+	}
+	memset(mat,-1,sizeof(mat));
+	memset(color,0,sizeof(color));
+//	memset(vis,0,sizeof(vis));
+}
+void Getcolor(int u,int c){
+	
+	color[u]=c;
+	for(int i=0;i<g[u].size();++i){
+		if(!color[g[u][i]]){
+			Getcolor(g[u][i],-c);
+		}
+
+	}
+
+}
+bool Match(int u){
+	
+	int v;
+	for(int i=0;i<g[u].size();++i){
+		
+		v=g[u][i];
+		if(!vis[v]){
+			
+			vis[v]=1;
+			if(mat[v]==-1 || Match(mat[v])){
+				
+				mat[v]=u;
+				return true;
+
+			}
+			
+		}
+	}
+	return false;
+}
+int main(){
+
+	freopen("in.txt","r",stdin);
+	int i,k,u,v,j;
+	while(scanf("%d",&n)!=EOF){
+		init();
+		for(i=0;i<n;++i){
+			scanf("%d: (%d)",&u,&k);
+			for(j=0;j<k;++j){
+
+				scanf("%d",&v);
+				g[u].push_back(v);
+			}
+		}
+		for(i=0;i<n;++i){
+			if(!color[i]){
+				Getcolor(i,1);
+			}
+		}
+		int ans=0;
+		for(i=0;i<n;++i){
+			if(color[i]==1){
+				memset(vis,0,sizeof(vis));
+				ans+=Match(i);
+			}
+		}
+		printf("%d\n",n-ans);
+
+	}
+	return 0;
+}

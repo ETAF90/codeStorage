@@ -1,0 +1,77 @@
+//思路和 count color 相似
+#include<iostream>
+using namespace std;
+int ans;
+struct node
+{
+	int l,r,met;      //met代表金属的值，取1，2，3，当met=0 时代表该区间存在多种金属。
+}a[300000];
+void build(int i,int left,int right)	//建树，每个区间的金属值初始为1.
+{
+	a[i].l=left;				
+	a[i].r=right;
+	a[i].met=1;
+	if(left==right)
+		return;
+	int mid=(left+right)>>1;
+	build(i<<1,left,mid);
+	build((i<<1)+1,mid+1,right);
+}
+void update(int i,int left,int right,int value)  //更新操作
+{
+	if(a[i].l==left && a[i].r==right)			//找到要跟新的区间，更新之。
+	{
+		a[i].met=value;
+		return;
+	}
+	//还未找到区间。
+	if(a[i].met && a[i].met!=value)				//若该区间是单种金属，且与要更新的金属不同				
+	{
+		a[i<<1].met=a[(i<<1)+1].met=a[i].met;   //给两个子区间赋值
+		a[i].met=0;								//0,表示多种金属。
+	}
+	if(a[i].met==value)							//若该区间的单金属且与要更新的金属相同，直接返回，不用更新。
+		return;
+	int mid=(a[i].l+a[i].r)>>1;
+	if(right<=mid)
+		update(i*2,left,right,value);
+	else
+		if(left>mid)
+			update(i*2+1,left,right,value);
+		else
+		{
+			update(i<<1,left,mid,value);
+			update((i<<1)+1,mid+1,right,value);
+		}
+}
+void find(int i,int left,int right)
+{
+	if(a[i].met)
+	{
+		ans+=a[i].met*(right-left+1);
+		return;
+	}
+	int mid=(right+left)>>1;
+	find(i*2,left,mid);
+	find(i*2+1,mid+1,right);
+}
+int main()
+{
+	int T,i,n,m,cases,p,q,value;
+	scanf("%d",&T);
+	for(cases=1;cases<=T;cases++)
+	{
+		scanf("%d%d",&n,&m);
+		build(1,1,n);
+		while(m--)
+		{
+			scanf("%d%d%d",&p,&q,&value);
+			update(1,p,q,value); 
+		}
+	
+		ans=0;
+		find(1,1,n);
+		printf("Case %d: The total value of the hook is %d.\n",cases,ans);
+	}
+	return 0;
+}

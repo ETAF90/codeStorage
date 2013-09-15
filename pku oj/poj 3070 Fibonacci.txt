@@ -1,0 +1,52 @@
+#include<stdio.h>					
+#define MOD 10000
+struct matrix							
+{
+	int a,b,c,d;
+}mat[31];
+struct matrix matrix_mul(struct matrix x,struct matrix y)			//矩阵乘法
+{
+	struct matrix ans;
+	ans.a=x.a*y.a%MOD+x.b*y.c%MOD;ans.a%=MOD;
+	ans.b=x.a*y.b%MOD+x.b*y.d%MOD;ans.b%=MOD;
+	ans.c=x.c*y.a%MOD+x.d*y.c%MOD;ans.c%=MOD;
+	ans.d=x.c*y.b%MOD+x.d*y.d%MOD;ans.d%=MOD;
+	return ans;
+}
+int main()
+{
+	int i,n;
+	mat[0].a=0;mat[0].b=mat[0].c=mat[0].d=1;						mat[i]表示 矩阵的2^i  
+	for(i=1;i<=30;i++)
+	{
+		mat[i].a=mat[i-1].a*mat[i-1].a%MOD+mat[i-1].b*mat[i-1].c%MOD;mat[i].a%=MOD;
+		mat[i].b=mat[i-1].a*mat[i-1].b%MOD+mat[i-1].b*mat[i-1].d%MOD;mat[i].b%=MOD;
+		mat[i].c=mat[i-1].c*mat[i-1].a%MOD+mat[i-1].d*mat[i-1].c%MOD;mat[i].c%=MOD;
+		mat[i].d=mat[i-1].c*mat[i-1].b%MOD+mat[i-1].d*mat[i-1].d%MOD;mat[i].d%=MOD;
+	}
+
+	while(scanf("%d",&n) && n!=-1)
+	{
+		if(n==0)
+		{
+			printf("0\n");
+			continue;
+		}
+		n-=1;
+		i=0;
+		struct matrix ans;
+		ans.a=ans.d=1;ans.b=ans.c=0;
+		while(n>0)							//	二分快速幂乘
+		{
+			if(n&1)
+			{
+				ans=matrix_mul(ans,mat[i]);
+			}
+			n>>=1;
+			++i;
+		}
+		printf("%d\n",ans.d);
+
+	}
+	return 0;
+}

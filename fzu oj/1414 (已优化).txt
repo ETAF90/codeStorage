@@ -1,0 +1,59 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <list>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+int f[10001],a[10001];						//优化：去掉时间相同但分数较低的元素；去掉时间较多但分数较低的元素。
+bool flag[10001];
+int main()
+{
+//	freopen("test.txt","r",stdin);
+	int n,m,i,j,x,t;
+	while(scanf("%d%d",&m,&n)!=EOF)
+	{
+		for(i=0;i<=m;i++)
+		{
+			f[i]=0;
+			flag[i]=0;
+			a[i]=-1;
+		}
+
+		for(i=1;i<=n;i++)
+		{
+			scanf("%d%d",&x,&t);
+			if(x>a[t] && t<=m)
+			{
+				a[t]=x;
+				flag[t]=true;
+			}
+			
+		}
+		for(i=1;i<n;i++)
+			if(flag[i])
+				for(j=i+1;j<=m;j++)
+					if(flag[j] && a[j]<a[i])
+						flag[j]=false;
+	
+		
+		for(t=1;t<=m;t++)
+			if(flag[t])
+				for(j=t;j<=m;j++)
+					if(f[j]<f[j-t]+a[t])
+						f[j]=f[j-t]+a[t];
+		printf("%d\n",f[m]);
+	}
+//	fclose(stdin);
+	return 0;
+}

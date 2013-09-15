@@ -1,0 +1,56 @@
+#include<iostream>
+#define min(a,b) (a<b?a:b)
+#define max(a,b) (a>b?a:b)
+using namespace std;
+struct node
+{
+	double x,y;
+}a[60];
+bool Interact(struct node a,struct node b,struct node c,struct node d)//叉乘法判断c,d为端点的线段是否在a,b线段所在的直线上
+{																	  //若要判断 (a,b)线段与(c,d)线段是否相交，则调用
+	double x1,y1,x2,y2,x3,y3,t;										  // Interact(a,b,c,d)&&Interact(c,d,a,b).		
+	x1=a.x-b.x;
+	y1=a.y-b.y;
+	x2=c.x-b.x;
+	y2=c.y-b.y;
+	x3=d.x-b.x;
+	y3=d.y-b.y;
+	t=(x1*y2-x2*y1)*(x1*y3-x3*y1);
+	if(t<0)
+		return true;
+	if((x1*y2-x2*y1)==0)
+	{
+		if(c.x>min(a.x,b.x) && c.x<max(a.x,b.x))
+			return true;
+	}
+	if((x1*y3-x3*y1)==0)
+	{
+		if(d.x>min(a.x,b.x) && d.x<max(a.x,b.x))
+			return true;
+	}
+	return false;
+}
+int main()
+{
+//	freopen("test.txt","r",stdin);
+	int h,w,n,i,j,ans;
+	while(scanf("%d%d",&w,&h)!=EOF)
+	{
+		if(w==0 && h==0)
+			break;
+		scanf("%d",&n);
+		for(i=0;i<=n;i++)
+			scanf("%lf%lf",&a[i].x,&a[i].y);
+		ans=2;
+		for(i=2;i<=n;i++)
+		{
+			for(j=1;j<i-1;j++)
+				if(Interact(a[j-1],a[j],a[i-1],a[i]) && Interact(a[i-1],a[i],a[j-1],a[j]))
+					ans++;
+			ans++;
+		}
+		printf("%d\n",ans);
+	}
+//	fclose(stdin);
+	return 0;
+}

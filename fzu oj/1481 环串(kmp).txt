@@ -1,0 +1,69 @@
+/*
+*	406700 2011-07-30 23:12:29 Accepted 1481 Visual C++  46 ms 192KB 1321B kite 
+*/
+#include<iostream>
+#include<map>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<cstdlib>
+#include<vector>
+#include<queue>
+#include<set>
+#include<stack>
+#include<bitset>
+#include<functional>
+using namespace std;
+const int N=202;
+
+void getnext(char* s,int *next)
+{
+	next[0]=0;
+	int k=0;				//k为最大前缀长度
+	for(int i=1;s[i];++i)
+	{
+		while(k>0 && s[k]!=s[i])k=next[k-1];
+		if(s[k]==s[i])++k;
+		next[i]=k;			
+	}
+}
+int kmp(char* s1,char* s2,int *next)	//在s1中找s2
+{
+	int len2=strlen(s2);
+	getnext(s2,next);
+	int q=0;
+	for(int i=0;s1[i];++i)
+	{
+		while(q>0 && s2[q]!=s1[i])q=next[q-1];
+		if(s2[q]==s1[i])++q;
+		if(!s2[q])
+			return i-len2+1;//返回s2在s1匹配的起点。
+			//若还要继续找，则先记下位置 i-len2+1,接着继续寻找下一个匹配：q=next[q-1];即当做s2[q]!=s1[i].
+	}
+	return -1;
+}
+int main()
+{
+	char str1[2*N],str2[N];
+	int next[N];
+	int n,i,ans,len;
+	while(scanf(" %s",str1)!=EOF)
+	{
+		len=strlen(str1);
+		for(i=0;i<len;++i)
+			str1[i+len]=str1[i];
+		str1[i+len]='\0';
+		scanf("%d",&n);
+		ans=0;
+		while(n--)
+		{
+			scanf(" %s",str2);
+			if(strlen(str2)!=len)continue;
+			if(kmp(str1,str2,next)!=-1)++ans;
+		}
+		printf("%d\n",ans);
+	}
+	return 0;
+}

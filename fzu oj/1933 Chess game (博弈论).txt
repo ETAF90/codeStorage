@@ -1,0 +1,15 @@
+#include<stdio.h>
+int main()
+{
+	int n,T,cases=1;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d",&n);
+		if(n&1)
+			printf("Case %d: 100.00%%\n",cases++);
+		else
+			printf("Case %d: 0.00%%\n",cases++);
+	}
+	return 0;
+}

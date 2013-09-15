@@ -1,0 +1,88 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <list>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#define N 5000
+using namespace std;
+struct node
+{int l,r,v;}a[N*3];
+int sum,b[N];
+void build(int i,int left,int right)
+{
+    a[i].l=left;
+    a[i].r=right;
+    a[i].v=0;
+    if(left==right)
+        return;
+    int mid=(left+right)>>1;
+    build(i*2,left,mid);
+    build(i*2+1,mid+1,right);
+}
+void insert(int i,int x)
+{
+    a[i].v++;
+    if(a[i].l==x && a[i].r==x)
+        return;
+    int mid=(a[i].l+a[i].r)>>1;
+    if(x<=mid)
+        insert(i*2,x);
+    else
+        insert(i*2+1,x);
+}
+void query(int i,int left,int right)
+{
+    if(a[i].l==left && a[i].r==right)
+    {
+        sum+=a[i].v;
+        return;
+    }
+     int mid=(a[i].l+a[i].r)>>1;
+     if(right<=mid)
+        query(i*2,left,right);
+     else
+         if(left>mid)
+             query(i*2+1,left,right);
+         else
+         {query(i*2,left,mid);query(i*2+1,mid+1,right);}
+
+}
+int main()
+{
+//    freopen("test.txt","r",stdin);
+    int n,i,j,min;
+    while(scanf("%d",&n)!=EOF)
+    {
+        build(1,0,n-1);
+        sum=0;
+        for(i=0;i<n;i++)
+        {
+            scanf("%d",b+i);
+            query(1,b[i],n-1);
+            insert(1,b[i]);
+        }
+        min=sum;
+        for(i=0;i<n-1;i++)
+        {
+            sum=sum+(n-b[i]-1)-b[i];
+            if(min>sum)
+                min=sum;
+        }
+        printf("%d\n",min);
+    
+    }
+    //fclose(stdin);
+    return 0;
+}

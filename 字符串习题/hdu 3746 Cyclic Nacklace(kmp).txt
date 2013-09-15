@@ -1,0 +1,74 @@
+/*
+*	4296009 2011-07-31 00:32:17 Accepted 3746 125MS 676K 1299 B C++ kite 
+*	test:
+	1
+	abaabaa
+	
+	ans=2
+
+
+*/
+#include<iostream>
+#include<map>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<cstdlib>
+#include<vector>
+#include<queue>
+#include<set>
+#include<stack>
+#include<bitset>
+#include<functional>
+using namespace std;
+const int N=100002;
+
+void getnext(char* s,int *next)
+{
+	next[0]=0;
+	int k=0;				//k为最大前缀长度
+	for(int i=1;s[i];++i)
+	{
+		while(k>0 && s[k]!=s[i])k=next[k-1];
+		if(s[k]==s[i])++k;
+		next[i]=k;			
+	}
+}
+/*
+int kmp(char* s1,char* s2,int *next)	//在s1中找s2
+{
+	int len2=strlen(s2);
+	getnext(s2,next);
+	int q=0;
+	for(int i=0;s1[i];++i)
+	{
+		while(q>0 && s2[q]!=s1[i])q=next[q-1];
+		if(s2[q]==s1[i])++q;
+		if(!s2[q])
+			return i-len2+1;//返回s2在s1匹配的起点。
+			//若还要继续找，则先记下位置 i-len2+1,接着继续寻找下一个匹配：q=next[q-1];即当做s2[q]!=s1[i].
+	}
+	return -1;
+}
+*/
+char str[N];
+int next[N];
+int main()
+{
+	int T;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%s",str);
+		getnext(str,next);
+		int len=strlen(str);
+		int t=len-next[len-1];
+		if(len%t==0 && next[len-1]!=0)
+			printf("0\n");
+		else
+			printf("%d\n",t-next[len-1]%t);
+	}
+	return 0;
+}

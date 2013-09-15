@@ -1,0 +1,48 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package main;
+
+/**
+ *12323 	235 	Accepted 	174ms 	300kb 	Java	993B	2011-09-19 00:17:34 	030902414
+ * ´ð°¸Îª 1*3*5*¡£¡£¡££¨2*n-1£©/ 2*4*6*¡£¡£¡££¨2*n£©
+ */
+
+import java.util.*;
+import java.io.*;
+import java.math.*;
+public class Main
+{
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+         BigInteger a=BigInteger.ONE,b=BigInteger.ONE;
+         BigInteger t=BigInteger.ONE;
+         int n,T,i;
+         Scanner sc = new Scanner(System.in);
+         T=sc.nextInt();
+         while(T-- >0){
+             n=sc.nextInt();
+             a=BigInteger.ONE;
+             b=BigInteger.ONE;
+             for(i=1;i<=n;++i)
+             {
+                 a=a.multiply(BigInteger.valueOf(i+i-1));
+                 b=b.multiply(BigInteger.valueOf(i+i));
+             }
+           
+           
+             t=a.gcd(b);  
+             a=a.divide(t);
+             b=b.divide(t);
+             System.out.print(a);
+             System.out.print("/");
+             System.out.println(b);
+             
+         }
+        
+    }
+}

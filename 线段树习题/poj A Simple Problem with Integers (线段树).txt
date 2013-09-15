@@ -1,0 +1,102 @@
+#include<iostream>
+using namespace std;
+#define N 100000
+#define Mid(a,b) (a+b)>>1
+__int64 ans;
+struct node
+{
+	int l,r;
+	__int64 sum,add;// sum代表该段区间的所有数的和，add代表该段区间每个数都应该加上add
+
+}a[N*3];
+void build(int i,int left,int right)
+{
+	a[i].l=left;
+	a[i].r=right;
+	a[i].add=0;
+	a[i].sum=0;
+	if(left==right)
+		return;
+	int mid=Mid(left,right);
+	build(i*2,left,mid);
+	build(i*2+1,mid+1,right);
+}
+void update(int i,int left,int right,int value)
+{
+	if(a[i].l==left && a[i].r==right)
+	{
+		a[i].add+=value;
+		return ;
+	}
+	a[i].sum+=value*(right-left+1);
+	int mid=Mid(a[i].l,a[i].r);
+	if(right<=mid)
+		update(i*2,left,right,value);
+	else
+		if(left>mid)
+			update(i*2+1,left,right,value);
+		else
+		{
+			update(i*2,left,mid,value);
+			update(i*2+1,mid+1,right,value);
+		}
+}
+void query(int i,int left,int right,__int64 d)
+{
+	d+=a[i].add;
+	if(a[i].l==left && a[i].r==right)
+	{
+		ans+=a[i].sum+d*(right-left+1);
+		return ;
+	}
+	
+	int mid=Mid(a[i].l,a[i].r);
+	if(right<=mid)
+		query(i*2,left,right,d);
+	else
+		if(left>mid)
+			query(i*2+1,left,right,d);
+		else
+		{
+			query(i*2,left,mid,d);
+			query(i*2+1,mid+1,right,d);
+		}
+}
+int main()
+{
+	//freopen("test.txt","r",stdin);
+	int n,q,i,x,ll,rr,vv;
+	char op;
+	while(scanf("%d%d",&n,&q)!=EOF)
+	{
+		build(1,1,n);
+		for(i=1;i<=n;i++)
+		{
+			scanf("%d",&x);
+			update(1,i,i,x);
+		}
+		getchar();
+	
+		while(q--)
+		{
+			op=getchar();
+			if(op=='C')
+			{
+				scanf("%d%d%d",&ll,&rr,&vv);
+				update(1,ll,rr,vv);
+			}
+			if(op=='Q')
+			{
+				ans=0;
+				__int64 d=0;
+				scanf("%d%d",&ll,&rr);
+				query(1,ll,rr,d);
+				printf("%I64d\n",ans);
+			}
+			getchar();
+	
+		}
+	}
+	//fclose(stdin);
+	return 0;
+}

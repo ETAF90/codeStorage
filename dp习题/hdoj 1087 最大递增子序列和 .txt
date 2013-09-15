@@ -1,0 +1,36 @@
+#include<iostream>
+using namespace std;
+#define N 1003
+int f[N],a[N];
+int main()
+{
+	int i,j,n,max;
+	while(scanf("%d",&n)&& n)
+	{
+		for(i=0;i<n;i++)
+		{
+			scanf("%d",a+i);
+			f[i]=a[i];
+		}
+		max=0x80000001;
+		for(i=1;i<n;i++)
+		{
+			for(j=0;j<i;j++)
+			{
+				if(a[i]>a[j] && f[i]<f[j]+a[i])
+				{
+					f[i]=f[j]+a[i];
+					
+				}
+			}
+			if(max<f[i])
+						max=f[i];
+		}
+	/*	for(i=0;i<n;i++)
+			printf("%d ",f[i]);
+		printf("\n");
+	*/
+		printf("%d\n",max);
+	}
+	return 0;
+}

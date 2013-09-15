@@ -1,0 +1,73 @@
+/*
+ * 4553211	2011-09-06 15:00:16	Accepted	4000	359MS	2144K	1233 B	C++	kite
+ *
+ *	三元组x、y、z 在所给数组中的顺序是x在y的前面，y在z的前面，且满足x<z<y 问数组中有多少个这样的（x,y,z）三元组
+ *  解法：先求出(x<y<z U x<z<y)即x最小。这样的三元组的个数。然后再求出x<y<z这样的三元组的个数。相减即为答案。
+*/
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+using namespace std;
+typedef __int64 LL;
+inline int lowbit(int x)
+{return x&-x;}
+const int N=100010;
+int data[N];
+LL C[N],lmin[N];
+const int P=100000007;
+void Modify(int i,int x)
+{
+	while(i<=100000)
+	{
+		C[i]+=x;
+		i+=lowbit(i);
+	}
+}
+LL Sum(int i)
+{
+	LL res=0;
+	while(i>0)
+	{
+		res+=C[i];
+		i-=lowbit(i);
+	}
+	return res;
+}
+int main()
+{
+
+	freopen("in.txt","r",stdin);
+	int T,i,n,cases=1;
+	LL ans,rmax;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d",&n);
+		memset(C,0,sizeof(C));
+		for(i=1;i<=n;++i)
+		{
+			scanf("%d",data+i);
+			lmin[i]=Sum(data[i]);
+			Modify(data[i],1);
+		}
+		memset(C,0,sizeof(C));
+		ans=0;
+		for(i=n;i>=1;--i)
+		{
+			rmax=n-i-Sum(data[i]);
+			ans=(ans+(rmax*(rmax-1)/2)%P)%P;
+			Modify(data[i],1);
+		}
+		memset(C,0,sizeof(C));
+		for(i=1;i<=n;++i)
+		{
+			ans-=Sum(data[i]);
+			while(ans<0)
+				ans+=P;
+			Modify(data[i],lmin[i]);
+		}
+		printf("Case #%d: %I64d\n",cases++,ans);
+
+	}
+	return 0;
+}

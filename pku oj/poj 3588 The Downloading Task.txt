@@ -1,0 +1,148 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <list>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#include<iostream>
+using namespace std;
+int main()
+{
+//	freopen("test.txt","r",stdin);
+	map<string,int> mapD;
+	set<string> wait;
+	int T,n,m,cnt;
+	bool flag;
+	char op[20],name[22];
+	scanf("%d",&T);
+	string ss[]={"","waiting","downloading","paused","finished"};
+	map<string,int>::iterator it;
+	map<string,int>::reverse_iterator rit;
+	while(T--)
+	{
+		mapD.clear();
+		wait.clear();
+		cnt=0;
+		flag=1;
+		scanf("%d%d",&n,&m);
+		while(m--)
+		{
+			scanf("%s",op);
+			if(op[0]=='N')
+			{
+				scanf("%s",name);
+				if(cnt<n)
+				{
+					mapD[name]=2;
+					cnt++;
+				}
+				else
+				{
+					mapD[name]=1;
+					wait.insert(name);
+				}
+			}
+			if(op[0]=='P')
+			{
+				scanf("%s",name);
+				if(mapD[name]==2)
+				{
+					if(!wait.empty())
+					{
+						if(flag)
+						{;
+							mapD[*wait.begin()]=2;
+							wait.erase(wait.begin());
+						}
+						else
+						{
+				
+							mapD[*--wait.end()]=2;
+							wait.erase(--wait.end());
+						}
+					}
+					else
+						cnt--;
+				}
+				else
+				{
+					wait.erase(name);
+				}
+					
+				mapD[name]=3;
+				
+			}
+			if(op[0]=='S')
+			{
+				scanf("%s",name);
+				if(name[0]=='a')
+					flag=true;
+				else
+					flag=false;
+			}
+			if(op[0]=='C')
+			{
+				scanf("%s",name);
+				if(cnt<n)
+				{
+					mapD[name]=2;
+					cnt++;
+				}
+				else
+				{
+					mapD[name]=1;
+					wait.insert(name);
+				}
+			}
+			if(op[0]=='F')
+			{
+				scanf("%s",name);
+				{		
+					mapD[name]=4;
+				}
+				if(!wait.empty())
+				{
+					if(flag)
+					{
+						mapD[*wait.begin()]=2;
+						wait.erase(wait.begin());
+					}
+					else
+					{
+						mapD[*--wait.end()]=2;
+						wait.erase(--wait.end());
+					}
+				}
+				else
+					cnt--;
+				
+			}
+
+		}
+		if(flag)
+		{
+			for(it=mapD.begin();it!=mapD.end();it++)
+				cout<<it->first<<" "<<ss[it->second]<<endl;
+			cout<<endl;
+		}
+		else
+		{
+			for(rit=mapD.rbegin();rit!=mapD.rend();rit++)
+				cout<<rit->first<<" "<<ss[rit->second]<<endl;
+			cout<<endl;
+		}
+	}
+//	wclose(stdin);
+	return 0;
+}

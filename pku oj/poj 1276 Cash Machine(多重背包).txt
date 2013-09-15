@@ -1,0 +1,67 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <list>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#define N 100001
+int f[N],w[N],num[N],n,m;			//¶àÖØ±³°ü
+void OneZeroPack(int w,int c)
+{
+	for(int j=m;j>=c;j--)
+		if(f[j]<f[j-c]+w)
+			f[j]=f[j-c]+w;
+}
+void CompletePack(int w,int c)
+{
+	for(int j=c;j<=m;j++)
+		if(f[j]<f[j-c]+w)
+			f[j]=f[j-c]+w;
+}
+void MultiplePack(int w,int c,int number)
+{
+	if(c*number>=m)
+	{
+		CompletePack(w,c);
+		return ;
+	}
+	int k=1;
+	while(k<number)
+	{
+		OneZeroPack(k*w,k*c);
+		number-=k;
+		k<<=1;
+	}
+	OneZeroPack(number*w,number*c);
+}	
+int main()
+{
+//	freopen("test.txt","r",stdin);
+	int i,j;
+	while(scanf("%d%d",&m,&n)!=EOF)
+	{
+		for(i=1;i<=n;i++)
+		{
+			scanf("%d%d",num+i,w+i);
+	
+		}
+		memset(f,0,sizeof(f));
+		for(i=1;i<=n;i++)
+			MultiplePack(w[i],w[i],num[i]);
+		printf("%d\n",f[m]);
+
+	}
+//	fclose(stdin);
+	return 0;
+}

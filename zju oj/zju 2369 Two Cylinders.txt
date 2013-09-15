@@ -1,0 +1,63 @@
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<cmath>
+using namespace std;
+double r1, r2;
+double f(double x)
+{
+	
+	return sqrt(r1*r1-x*x)*sqrt(r2*r2-x*x);
+}
+void Switch(double& a,double & b)
+{
+	double t=a;a=b;b=t;
+	return;
+}
+
+double fsimp(double a,double b,double eps) /*辛普森算法*/ 
+ /*a为积分下限，b为积分上限，eps是希望达到的精度*/ 
+{
+    int n,k; 
+    double h,t1,t2,s1,s2,ep,p,x; 
+    n=1; h=b-a; 
+    t1=h*(f(a)+f(b))/2.0;  /*用梯形公式求出一个大概的估值*/ 
+    s1=t1; 
+    ep=eps+1.0; 
+    while (ep>=eps) 
+{ 
+/*用梯形法则计算*/ 
+p=0.0; 
+for (k=0;k<=n-1;k++) 
+{ 
+x=a+(k+0.5)*h; 
+p=p+f(x); 
+} 
+t2=(t1+h*p)/2.0; 
+/*用辛普森公式求精*/ 
+s2=(4.0*t2-t1)/3.0; 
+ep=fabs(s2-s1); 
+t1=t2; s1=s2; n=n+n; h=h/2.0; 
+} 
+    return(s2); 
+} 
+
+int main()
+{
+	int n;
+	double ans;
+	while(scanf("%d",&n)!=EOF)
+	{
+		while(n--)
+		{
+			scanf("%lf%lf",&r1,&r2);
+			if(r1>r2)
+				Switch(r1,r2);
+			double a,b;
+			a=0;b=r1;
+			ans=fsimp(a,b,1e-6);
+			printf("%.4lf\n",ans*8);
+		}
+	}
+}

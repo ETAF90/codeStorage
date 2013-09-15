@@ -1,0 +1,22 @@
+#include<stdio.h>			//a1^a2^....an=0时平衡,先手输否则先手胜
+					
+int main()
+{
+	int ans,m,a;
+	while(scanf("%d",&m)!=EOF)
+	{
+		ans=0;
+		while(m--)
+		{
+			scanf("%d",&a);
+			ans^=a;
+		}
+		if(ans==0)
+			printf("No\n");
+		else
+			printf("Yes\n");
+
+		
+	}
+	return 0;
+}

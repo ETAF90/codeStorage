@@ -1,0 +1,73 @@
+/*
+ *	4783536	2011-10-19 20:53:25	Accepted	1394	31MS	300K	1128 B	C++	kite
+ *	树状数组求逆序数，fmax[i]代表第i个数的前面比他大的数。。bmax代表第i个数的后面比他大的数。。。
+ */
+
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+using namespace std;
+const int N=5001;
+int n,C[N],bmax[N],bmin[N],fmax[N],fmin[N],data[N];
+inline int Lowbit(int x){
+
+	return (x&-x);
+}
+void Modify(int i,int d){
+	while(i<N){
+		C[i]+=d;
+		i+=Lowbit(i);
+	}
+
+}
+int Sum(int i){
+	
+	int res=0;
+	while(i>0){
+		
+		res+=C[i];
+		i-=Lowbit(i);
+	}
+	return res;
+}
+int main(){
+	int x,i,j,ans;
+	while(scanf("%d",&n)!=EOF){
+		
+		
+		ans=0;
+		for(i=0;i<n;++i)
+		{
+			scanf("%d",data+i);
+			++data[i];
+		}
+		memset(C,0,sizeof(C));
+		for(i=n-1;i>=0;--i){
+			
+			bmin[i]=Sum(data[i]);
+			Modify(data[i],1);
+			bmax[i]=Sum(n)-Sum(data[i]);
+			ans+=bmin[i];
+		}
+		memset(C,0,sizeof(C));
+		for(i=0;i<n;++i){
+			
+			fmin[i]=Sum(data[i]);
+			Modify(data[i],1);
+			fmax[i]=Sum(n)-Sum(data[i]);
+		}
+		
+		//for(i=0;i<n;++i)printf("%d ",bmin[i]);printf("\n");
+		//for(i=0;i<n;++i)printf("%d ",bmax[i]);printf("\n");
+		int tmp=ans;
+		//printf("ini=%d\n",tmp);
+		for(i=0;i<n-1;++i){
+			
+			tmp+=bmax[i]-bmin[i]-fmin[i]+fmax[i];
+			ans=min(ans,tmp);
+		}
+		printf("%d\n",ans);
+	}
+	return 0;
+}

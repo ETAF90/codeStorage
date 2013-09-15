@@ -1,0 +1,98 @@
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<deque>
+#include<cstdlib>
+using namespace std;
+#define N 10000000
+bool flag[10001];
+int ans;
+struct node
+{
+	int l,r,v;
+} a[3*N];
+void build(int i,int left,int right)
+{
+	a[i].l=left;
+	a[i].r=right;
+	a[i].v=0;
+	if(left==right)
+		return ;
+	int mid=(left+right)>>1;
+	build((i<<1),left,mid);
+	build((i<<1)+1,mid+1,right);
+}
+void paint(int i,int left,int right,int color)
+{
+	if(a[i].l==left && a[i].r==right)
+	{a[i].v=color;return;}
+	if(a[i].v==color)
+		return;
+	if(a[i].v)
+	{
+		a[i*2].v=a[i*2+1].v=a[i].v;
+		a[i].v=0;
+	}
+	int mid=(a[i].l+a[i].r)>>1;
+	if(right<=mid)
+		paint((i<<1),left,right,color);
+	else
+		if(left>mid)
+			paint((i<<1)+1,left,right,color);
+		else
+		{
+			paint(i<<1,left,mid,color);
+			paint((i<<1)+1,mid+1,right,color);
+		}
+}
+void query(int i,int left,int right)
+{
+	if(a[i].v)
+	{
+		if(!flag[a[i].v])
+		{
+			ans++;
+			flag[a[i].v]=true;
+		}
+		return;
+	}
+	int mid=(a[i].l+a[i].r)>>1;	
+	if(right<=mid)
+		query((i<<1),left,right);
+	else
+		if(left>mid)
+			query((i<<1)+1,left,right);
+		else
+		{
+			query((i<<1),left,mid);
+			query((i<<1)+1,mid+1,right);
+		}
+	
+}
+int main()
+{
+	int i,c,n,p,q,max;
+	scanf("%d",&c);
+	while(c--)
+	{
+		scanf("%d",&n);
+		build(1,1,N);
+		max=0;
+		for(i=1;i<=n;i++)
+		{
+			scanf("%d%d",&p,&q);
+			if(max<q)
+				max=q;
+			paint(1,p,q,i);
+		}
+		ans=0;
+		memset(flag,0,sizeof(flag));
+		query(1,1,max);
+		printf("%d\n",ans);
+
+	}
+
+	return 0;
+}

@@ -1,0 +1,67 @@
+/*
+	匈牙利求最大匹配。
+*/
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+using namespace std;
+const int N=101,M=301;
+int g[N][M],mat[M],vis[M];
+int n,m;
+
+bool Match(int u){
+	
+	int v;
+	for(int i=1;i<=g[u][0];++i){
+		
+		v=g[u][i];
+		if(!vis[v]){
+			
+			vis[v]=1;
+			if(mat[v]==-1 || Match(mat[v])){
+				
+				mat[v]=u;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+int main(){
+	
+
+	freopen("in.txt","r",stdin);
+	int i,j,T,k,v;
+	scanf("%d",&T);
+	while(T--){
+		
+		memset(g,0,sizeof(g));
+		scanf("%d%d",&n,&m);
+		for(i=1;i<=n;++i){
+			scanf("%d",&k);
+			g[i][0]=k;
+			
+			for(j=1;j<=k;++j){
+				
+				scanf("%d",&v);
+				g[i][j]=v;
+
+			}
+		}
+		bool ans=true;
+		memset(mat,-1,sizeof(mat));
+		for(i=1;i<=n;++i){
+			
+			memset(vis,0,sizeof(vis));
+			if( !Match(i) ){
+				
+				ans=false;
+				break;
+			}
+
+		}
+		puts(ans?"YES":"NO");
+	}
+	return 0;
+}

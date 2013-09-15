@@ -1,0 +1,42 @@
+/*		题目意思很清晰，就是求小于n并且与n不互质的数的和。由于数据范围比较大，显然需要用到__int64，暴力解决是不可能的。由于在poj做了一道求小于n且与n互质的数的和，所以可以直接总和减一下就行了。当时做的那一题使用的积性函数做的，当看到其他人过题时时间都是0ms，想来可能以前那道题目做得烦了，没有必要打表质因数分解，然后再算，于是自己推了一下公式。
+
+    设小于N且与N互质的正整数之和, 设为ans. 
+    不妨设这些数为a[0],a[1], a[2], ..., a[ phi(N)-1 ], 
+    由gcd(N, a[i]) =1,那么gcd(N,N - a[i]) =1 
+    这样, N - a[0], N - a[1], ..., N - a[ phi(N)-1]与原数列相同, 从而:  
+     ans = a[0] + a[1] + ... + a[ phi(N) -1]  
+    ans= (N - a[0]) + (N - a[1]) + ... + (N - a[ phi[N]-1 ]);两式相加得 ans=N*phi[N]/2;那么结果就显然了res=(N-1)*N/2-ans;
+*/
+#include<iostream>
+using namespace std;
+#define M 1000000007
+typedef __int64 ll;
+int main()
+{
+	ll n,n1,i,ans,oula;
+	while(scanf("%I64d",&n) && n)
+	{
+		if(n==2 || n==3)
+		{
+			printf("0\n");
+			continue;
+		}
+		n1=n;
+		oula=n;
+		for(i=2;i*i<=n;++i)
+		{
+			if(n%i==0)
+			{
+				oula-=oula/i;;
+				while(n%i==0)
+					n/=i;
+			}
+		}
+		if(n!=1)
+			oula-=oula/n;
+		ans=n1*(n1-1-oula)/2%M;	//当n=2，3时oula=n1;ans为负数
+		printf("%I64d\n",ans);
+
+	}
+	return 0;
+}

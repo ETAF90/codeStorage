@@ -1,0 +1,124 @@
+/* dp+二分
+ * 先预处理出sum[i][j],sum[i][j]=  (1--i)*(1--j)矩形内元素的和  
+ * sum[i][j]=sum[i-1][j]+sum[i][j-1]+a[i][j]-sum[i-1][j-1];
+ * 预处理时间：O(n^2)
+ * 由a[i][j]>=0 可得关于h 有单调性：h越大，minSquare(h)越大 minSquare(h)是指边为h的正方形的最小元素。
+ * 由单调性二分h,最大的h满足minSquare(h)<=limit
+ */
+
+
+
+
+
+#include<iostream>
+#include<cstdio>
+using namespace std;
+
+const int N=1001;
+int a[N][N];
+__int64 sum[N][N];
+int n,m,limit;
+
+void prePro(){
+
+	int i,j;
+	sum[0][0]=0;
+	for(i=0;i<n;++i){
+
+		sum[i][0]=0;
+	}
+	for(j=0;j<m;++j){
+
+		sum[0][j]=0;
+	}
+
+	for(i=1;i<=n;++i){
+
+		for(j=1;j<=m;++j){
+
+			sum[i][j]=sum[i-1][j]+sum[i][j-1]+a[i][j]-sum[i-1][j-1];
+		}
+	}
+
+}
+
+int minSquare(int h){//找出边长为h的和最小的正方形
+
+	int res=0x3fffffff;
+	
+	__int64 s;
+	for(int i=h;i<=n;++i){
+		
+		for(int j=h;j<=m;++j){
+			
+			s = sum[i][j]-sum[i-h][j]-sum[i][j-h]+sum[i-h][j-h];
+
+			res = res < s ? res:s;
+		}
+	}
+	
+	return res;
+	
+}
+int Bsearch(int left,int right){
+	
+
+
+	int mid = (left+right)>>1;
+
+	int res = minSquare(mid);
+	
+	if(res == limit)
+		return mid;
+
+	if(mid == left){
+
+		if(res<limit){
+		
+			return minSquare(right) <= limit ? right : mid;
+		}
+		else{
+			
+			return 0;
+		}
+	}
+			
+	if(res<=limit)
+		return Bsearch(mid,right);
+	else
+		return Bsearch(left,mid-1);
+
+}
+
+int main(){
+
+
+	freopen("in.txt","r",stdin);
+
+	int T,i,j;
+
+	scanf("%d",&T);
+
+	while(T--){
+		
+		scanf("%d%d%d",&n,&m,&limit);
+		
+		for(i=1;i<=n;++i){
+		
+			for(j=1;j<=m;++j){
+
+				scanf("%d",&a[i][j]);
+			}
+		}
+		prePro();
+		
+		//二分h
+		
+		int h=Bsearch(1,n<m?n:m);
+
+		printf("%d\n",h*h);
+
+			
+	}
+	return 0;
+}

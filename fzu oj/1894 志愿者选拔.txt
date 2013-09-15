@@ -1,0 +1,56 @@
+
+
+#include<iostream>
+#include<string>
+#include<deque>
+using namespace std;
+struct node
+{
+	int pos,value;
+
+}Q[1000006];
+
+int main()
+{
+	int t,i,v;
+	char oper[7];
+	scanf("%d",&t);
+	struct node tmp;
+	while(t--)
+	{
+		scanf("%s",oper);
+		int front=0,qfront=0;
+		int rear=0,qrear=0;
+		int pos=0;
+		while(scanf("%s",oper) && oper[0]!='E')
+		{
+			if(oper[0]=='C')
+			{
+				 scanf("%*s%d",&tmp.value);//一开始写成scanf("%s%d",oper,&tmp.value);oper值被更改影响后面的操作故一直wa
+				tmp.pos=pos;
+				rear++;
+				pos++;
+				while(qfront!=qrear && tmp.value>Q[qrear-1].value )
+					qrear--;
+				Q[qrear]=tmp;
+				qrear++;
+			}
+			if(oper[0]=='G')
+				if(front!=rear)
+					front++;
+			if(oper[0]=='Q')
+			{
+				while(qfront!=qrear && Q[qfront].pos<front)
+					qfront++;
+				if(qfront==qrear)
+					printf("-1\n");
+				else
+					printf("%d\n",Q[qfront].value);
+
+			}
+
+		}
+
+	}
+	return 0;
+}

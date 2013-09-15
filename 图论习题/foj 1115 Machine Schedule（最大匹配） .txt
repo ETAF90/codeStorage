@@ -1,0 +1,55 @@
+/*
+412677	2011-08-31 23:08:31	1115	Visual C++	0 ms	240KB	803B
+*/
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+#include<vector>
+using namespace std;
+const int N=110;
+int g[N][N];
+int mat[N],vis[N];
+int n,m;
+int max_match(int u)
+{	
+	int v,t;
+	for(v=0;v<m;++v)
+	{
+		if(g[u][v] && !vis[v])
+		{
+			vis[v]=1;t=mat[v];mat[v]=u;
+			if(t==-1 || max_match(t))return 1;
+			mat[v]=t;
+		}
+	}
+	return 0;
+}
+int main()
+{
+	//freopen("in.txt","r",stdin);
+	int k,x,y,num,i,j,ans;
+	while(scanf("%d",&n) && n)
+	{
+		scanf("%d%d",&m,&k);
+		memset(g,0,sizeof(g));
+		for(i=0;i<k;++i)
+		{
+			scanf("%*d%d%d",&x,&y);
+			if(x && y)
+				g[x][y]=1;
+		}
+		ans=0;
+		memset(mat,-1,sizeof(mat));
+		for(i=1;i<n;++i)
+		{
+			//if(mat[i]==-1)			//注意：这里若未注释掉会wa因为mat[i]会被改变，使!=-1
+			//{
+				memset(vis,0,sizeof(vis));
+				ans+=max_match(i);
+			//}
+		}
+		printf("%d\n",ans);
+	}
+	return 0;
+}

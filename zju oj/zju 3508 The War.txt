@@ -1,0 +1,41 @@
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+class node
+{
+public:
+	int min,max;
+};
+bool cmp(const node& a,const node& b)
+{
+	return a.max<b.max;
+}
+node a[2501];
+int b[40001];
+bool b1[40001];
+using namespace std;
+int main()
+{
+	int n,m,i,j,ans;
+	while(scanf("%d%d",&n,&m)!=EOF)
+	{
+		for(i=0;i<n;i++)
+			scanf("%d%d",&a[i].min,&a[i].max);
+		sort(a,a+n,cmp);
+		for(i=0;i<m;i++)
+			scanf("%d",b+i);
+		sort(b,b+m);
+
+		memset(b1,0,sizeof(b1));
+		ans=0;
+		for(i=0;i<n;i++)
+		{
+			for(j=0;j<m;j++)
+				if(!b1[j] && b[j]<=a[i].max && b[j]>=a[i].min)
+				{ans++;b1[j]=true;break;}
+		}
+		printf("%d\n",ans);
+	}
+}

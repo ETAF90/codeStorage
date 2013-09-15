@@ -1,0 +1,213 @@
+/*
+ *	4814836	2011-10-24 17:11:24	Accepted	1569	15MS	1060K	3632 B	G++	kite
+ *	题意，给定一个矩阵，取出若干个数，这些数两两互不相邻，求这些数的和最大是多少。
+ *  问题实质就是求最大点权独立集（两两之间没有边的点的点集，点权之和最大），而最小点权覆盖集（覆盖住每条边的点集，边权之和最小）
+ *  所有点权之和=最大独立集点权和+最小独立集点权和。
+ *  最小覆盖集可转换成求最小割：
+ *  首先建网络流图：
+ 增加源点和汇点，对于原图边e(u,v). 令c[u][v] = oo, c[s][u] = W(u), c[v][t] = W(v).。
+设权重都大于0. 这样，显然边e(u,v)不可能在最小割C[S,T]中，否则就不是最小割了。
+ 所以对于每一条路径s--u--v--t, 根据割的定义， 那么3条边s--u, u--v, v--t至少有一条边在割边集里。
+因为u--v不在割边集里，那么s--u或者v--t在割边集里，于是对于原图每一条边u--v, 都有u或者v在割集中。
+ 所以根据建图的赋值最小割边集每一条边的容量对应一个点的点权。综上：最小割里的点能覆盖原图每一条边，
+且最小割的容量对应这些点的点权，于是最小割容量就对应最小点权覆盖。
+ */
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<queue>
+using namespace std;
+const int N=2510;
+const int inf = 0x3fffffff;
+
+struct node {
+	int t;
+	int flow;
+	int cap;
+	int index;
+};
+vector<node> g[N];
+vector<int> e[N];
+int rank[N];
+void init(int n) {
+	memset(rank, -1, sizeof (rank));
+	int i;
+	for (i = 0; i < n; ++i) {
+		g[i].clear();
+		e[i].clear();
+	}
+}
+void addedge(int a, int b, int c) {
+
+	node temp;
+	temp.t = b;
+	temp.cap = c;
+	temp.flow = 0;
+	temp.index = g[b].size();
+	g[a].push_back(temp);
+		temp.t = a;
+	temp.cap = 0;
+	temp.index = g[a].size() - 1;
+	g[b].push_back(temp);
+}
+void addedge1(int a, int b, int c) {
+	node temp;
+	temp.t = b;
+	temp.cap = c;
+	temp.flow = 0;
+	temp.index = g[b].size();
+	g[a].push_back(temp);
+	temp.t = a;
+	temp.index = g[a].size() - 1;
+	g[b].push_back(temp);
+}
+int bfs(int s, int t, int n) {
+	memset(rank, -1, sizeof (rank));
+	int i;
+	for (i = 0; i < n; ++i)
+		e[i].clear();
+	int que[N];
+	int u, v;
+	int front = 0, rear = 0;
+	rank[s] = 0;
+	rear++;
+	que[front] = s;
+	for (; rear > front;) {
+		u = que[front++];
+		for (i = 0; i < g[u].size(); ++i) {
+			v = g[u][i].t;
+			if (rank[v] == -1 && g[u][i].cap) {
+				que[rear++] = v;
+				rank[v] = rank[u] + 1;
+			}
+			if (rank[v] == rank[u] + 1)
+				e[u].push_back(i);
+		}
+	}
+	return (rank[t] != -1);
+}
+int dinic(int s, int t, int n) {
+	int st[N], maxflow = 0;
+	int aux[N];
+	int top, cur;
+	int p, i, k;
+	while (1) {
+		if (bfs(s, t, n) == 0) break;
+		top = 0;
+
+			st[top] = s;
+		cur = s;
+		while (1) {
+			if (cur == t) {
+				int minc = 0x7fffffff;
+				for (i = 0; i < top; ++i) {
+					p = aux[i + 1];
+					if (minc > g[st[i]][p].cap)
+						minc = g[st[i]][p].cap, k = i;
+				}
+				for (i = 0; i < top; ++i) {
+					p = aux[i + 1];
+					g[st[i]][p].cap -= minc;
+					g[g[st[i]][p].t][g[st[i]][p].index].cap += minc;
+				}
+				maxflow += minc;
+				cur = st[top = k];
+				// continue;
+			}
+			int len = e[cur].size();
+			while (len) {
+				p = e[cur][len - 1];
+				if (g[cur][p].cap && rank[g[cur][p].t] == rank[cur] + 1)
+					break;
+				else {
+					len--;
+					e[cur].pop_back();
+				}
+			}
+			if (len) {
+				cur = st[++top] = g[cur][p].t;
+				aux[top] = p;
+			} else {
+				if (top == 0) break;
+				rank[cur] = -1;
+				cur = st[--top];
+			}
+		}
+	}
+	return maxflow;
+}
+int dx[]={0,1,0,-1},
+dy[]={1,0,-1,0};
+int gg[55][55];
+typedef struct pnode{
+
+	int x,y;
+	pnode(){}
+	pnode(int x1,int y1):x(x1),y(y1){}
+}pnode;
+
+int row,col;
+void initt(){
+
+	int i;
+	memset(gg,-1,sizeof(gg));
+	gg[0][0]=0;
+	queue<pnode> Q;
+	pnode now,next;
+	Q.push(pnode(0,0));
+	//bfs
+	while(!Q.empty()){
+
+		now=Q.front();
+		Q.pop();
+		for( i=0;i<4;++i){
+			next.x=now.x+dx[i];
+			next.y=now.y+dy[i];
+			if(next.x>=0 && next.y>=0 && next.x<row && next.y<col && gg[next.x][next.y]==-1)
+			{
+				gg[next.x][next.y]= 1-gg[now.x][now.y];
+				Q.push(next);
+			}
+		}
+
+	}
+}
+int main()
+{
+
+	freopen("in.txt","r",stdin);
+	int i,j,k,n,i1,j1,id,id1,x,s,t;
+	while(~scanf("%d%d",&row,&col)){
+
+		memset(g,0,sizeof(g));
+		int sum=0;
+		initt();
+		s=row*col;
+		t=s+1;
+		n=t+1;
+		for(i=0;i<row;++i)
+			for(j=0;j<col;++j)
+			{
+				id=i*col+j;
+				scanf("%d",&x);
+				sum+=x;
+				if(gg[i][j]==0)
+					addedge(s,id,x);//g[s][id]=x;
+				else
+					addedge(id,t,x);//	g[id][t]=x;
+				if(gg[i][j]==1)
+					continue;
+				for(k=0;k<4;++k){
+
+					i1=i+dx[k];
+					j1=j+dy[k];
+					if(i1>=0 && j1>=0 && i1<row && j1<col)
+						addedge(id,i1*col+j1,inf);//g[id][i1*col+j1]=inf;
+				}
+			}
+
+			printf("%d\n",sum-dinic( s, t,n));
+	}
+	return 0;
+}

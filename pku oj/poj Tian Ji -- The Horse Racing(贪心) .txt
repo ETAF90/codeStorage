@@ -1,0 +1,53 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <list>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#define N 10000
+using namespace std;
+int a[1001],b[1001];
+int main()
+{
+	//freopen("test.txt","r",stdin);
+	int i,j,p,q,n,cnt;
+	while(scanf("%d",&n) && n)
+	{
+		for(i=0;i<n;i++)
+			scanf("%d",a+i);
+		for(i=0;i<n;i++)
+			scanf("%d",b+i);
+		sort(a,a+n);
+		sort(b,b+n);
+		cnt=0;
+		for(i=n-1,j=n-1,q=0,p=0;i>=p;)
+		{
+			if(a[i]>b[j])				
+			{cnt++;i--;j--;}
+			else if(a[i]<b[j])
+			{cnt--;p++;j--;}
+			else//a[i]==b[i];
+				if(a[p]>b[q])
+				{cnt++;p++;q++;}
+				else if(b[j]>a[p])
+				{cnt--;p++;j--;}
+				else
+				{p++;j--;}
+		}
+		printf("%d\n",200*cnt);
+	}
+	
+//	fclose(stdin);
+	return 0;
+}

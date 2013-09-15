@@ -1,0 +1,43 @@
+#include<iostream>
+#include<cmath>
+#include<vector>
+using namespace std;
+#define N 50000
+bool prime[N+1]={0};
+int main()
+{
+	int i,j,m,a,b;
+
+	for(i=2;i<=sqrt(double(N));i++)
+	{
+		for(j=i;j*i<=N;j++)
+			prime[i*j]=1;
+	}
+	vector<int> p;
+	for(i=2;i<=N;i++)
+		if(!prime[i])
+			p.push_back(i);
+
+	while(scanf("%d%d%d",&m,&a,&b)!=EOF)
+	{
+		if(m==0 && a==0 && b==0)break;
+	int l=p[0],w=p[0];
+	int product=l*w;
+	for(i=0;p[i]*p[i]<=m;i++)
+	{
+	for(j=i;double(p[i])/double(p[j])>=double(a)/double(b) && p[i]*p[j]<=m;j++)
+		{
+				if(p[i]*p[j]>product)
+				{
+					product=p[i]*p[j];
+					w=p[i];
+					l=p[j];
+				}
+		}
+
+	}
+printf("%d %d\n",w,l);
+
+	}
+	return 0;
+}

@@ -1,0 +1,110 @@
+#include<iostream>
+#include<cmath>
+#include<fstream>
+#define N  55
+using namespace std;
+class Position
+{
+public:
+	int x,
+		y,
+		z;
+};
+class Queue
+{
+private:
+	int front;
+	int rear;
+	int MaxSize;
+	Position* queue;
+public:
+	Queue(int MaxQueueSize=1000);
+
+	~Queue(void){delete[] queue;};
+	bool IsEmpty()const{return front==rear;}
+	Queue& Add(const Position&x);
+	Queue& Delete(Position &x);
+};
+Queue::Queue(int MaxQueueSize)
+{
+	MaxSize=MaxQueueSize+1;
+	front=rear=0;
+	queue=new Position[MaxSize];
+
+}
+
+Queue& Queue:: Add(const Position&x)
+{
+	rear=(rear+1)%MaxSize;
+	queue[rear]=x;
+	return *this;
+}
+Queue& Queue::Delete(Position &x)
+{
+	front=(front+1)%MaxSize;
+	x = queue[front];
+	return *this;
+}
+//---------------------
+int main()
+{
+	ifstream fin("Input.txt");
+	int map[N][N][N];
+	int l,w,h,m;
+	Position now,nbr;
+	Position offset[6];
+	offset[0].x=0;offset[0].y=0;offset[0].z=1;
+	offset[1].x=0;offset[1].y=0;offset[1].z=-1;
+	offset[2].x=0;offset[2].y=1;offset[2].z=0;
+	offset[3].x=0;offset[3].y=-1;offset[3].z=0;
+	offset[4].x=1;offset[4].y=0;offset[4].z=0;
+	offset[5].x=-1;offset[5].y=0;offset[5].z=0;
+	while(fin>>l>>w>>h)
+	{
+		fin>>m;
+		for(int i=1;i<=l;i++)
+			for(int j=1;j<=w;j++)
+				for(int k=1;k<=h;k++)
+					fin>>map[i][j][k];
+		//-------------------------------
+		for(int i=0;i<=l+1;i++)
+			for(int j=0;j<=w+1;j++)
+				map[i][j][0]=map[i][j][h+1]=-1;
+		for(int j=0;j<=w+1;j++)
+			for(int k=0;k<=h+1;k++)
+				map[0][j][k]=map[l+1][j][k]=-1;
+		for(int i=0;i<=l;i++)
+			for(int k=0;k<=h;k++)
+				map[i][0][k]=map[i][w+1][k]=-1;
+		//------------------------------------------
+		int cnt=0;
+		for(int i=1;i<=l;i++)
+			for(int j=1;j<=w;j++)
+				for(int k=1;k<=h;k++)
+				{
+					if(map[i][j][k]!=-1)
+					{
+						Queue Q;
+						now.x=i;now.y=j;now.z=k;
+						while(1)
+						{	
+							for(int c=0;c<6;c++)
+							{
+								nbr.x=now.x+offset[c].x;
+								nbr.y=now.y+offset[c].y;
+								nbr.z=now.z+offset[c].z;
+								if(map[nbr.x][nbr.y][nbr.z]!=-1 && abs(map[nbr.x][nbr.y][nbr.z]-map[now.x][now.y][now.z])<=m  )
+									Q.Add(nbr);
+							}
+							map[now.x][now.y][now.z]=-1;
+							if(Q.IsEmpty())break;
+							else
+								Q.Delete(now);
+						}//while 
+						cnt++;
+					}//if
+				}//for
+			cout<<cnt<<endl;				
+	}//while
+	return 0;
+}

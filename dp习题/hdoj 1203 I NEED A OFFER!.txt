@@ -1,0 +1,43 @@
+#include<iostream>
+using namespace std;
+#define N 10001
+#define M 1001
+int c[M];
+double w[M],f[N];			//一维01背包问题，耗费为每所学校需花的钱，w[i]为第i所学校拿不到offer的概率。
+							//f[i]表示花i元拿不到offer的最小概率，则花i元拿到至少一份offer的概率为1-f[i].
+int main()
+{
+	int n,m,i,j;
+	double tmp;
+	while(scanf("%d%d",&n,&m)!=EOF)
+	{
+		if(!n && !m)
+			break;
+		for(i=1;i<=m;i++)
+		{
+			scanf("%d%lf",c+i,&tmp);
+			w[i]=1-tmp;
+		}
+	
+		for(i=0;i<=n;i++)
+			f[i]=1;
+		//for(i=0;i<=n;i++)
+		//	printf("%.2lf ",f[i]);
+		//printf("\n");
+		for(i=1;i<=m;i++)
+		{
+			for(j=n;j>=c[i];j--)
+				if(f[j]>f[j-c[i]]*w[i])
+					f[j]=f[j-c[i]]*w[i];
+				
+		//	for(j=0;j<=n;j++)
+		//		printf("%.2lf ",f[j]);
+		//	printf("\n");
+		}
+		printf("%.1lf%%\n",(1-f[n])*100);
+
+
+		
+	}
+	return 0;
+}

@@ -1,0 +1,52 @@
+	#include <iostream>
+	#include <fstream>
+/*
+题目分析：2^x mod n=1,则 2^x=kn+1;
+			 kn=2^x-1,
+		      则 k、n均为奇数。故n为偶数时无解
+		      当 n=1时，任意数x%1=0；故n=1时无解
+		      当 n为奇数时x=log(kn+1)如何证明必然有解？
+
+*/	
+
+	#include <sstream>
+	#include <algorithm>
+	#include <string>
+	#include <set>
+	#include <map>
+	#include <utility>
+	#include <queue>
+	#include <stack>
+	#include <list>
+	#include <vector>
+	#include <cstdio>
+	#include <cstdlib>
+	#include <cstring>
+	#include <cmath>
+	#include <ctime>
+	#include<iostream>
+	using namespace std;
+	int main()
+	{
+		int n,x,t;
+		while(scanf("%d",&n)!=EOF)
+		{
+			if(n==1 || n%2==0)
+				printf("2^? mod %d = 1\n",n);
+			else
+			{
+				x=1;
+				t=2;
+				while(t%n!=1)
+				{
+					t=t*2%n;
+					x++;
+					
+				}
+				printf("2^%d mod %d = 1\n",x,n);
+
+			}
+
+		}
+		return 0;
+	}

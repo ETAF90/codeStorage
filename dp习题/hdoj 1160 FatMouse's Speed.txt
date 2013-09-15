@@ -1,0 +1,57 @@
+#include<iostream>
+#include<algorithm>
+using namespace std;
+struct node
+{
+	int pos,s,w;
+	bool operator<(const node x)
+	{return s>x.s;}
+}a[1002];
+int main()
+{
+
+//	freopen("test.txt","r",stdin);
+	int n=0,i,j,f[1002],pre[1002],next[1002],max,maxp;
+	while(scanf("%d%d",&a[n].w,&a[n].s)!=EOF)
+	{
+		a[n].pos=n+1;
+		n++;
+	}
+	sort(a,a+n);
+/*	for(i=0;i<n;i++)
+	{
+		printf("%d %d %d\n",a[i].w,a[i].s,a[i].pos);
+	}
+*/
+	max=0;
+	for(i=0;i<n;i++)
+	{
+		f[i]=1;
+		for(j=0;j<i;j++)
+		{
+			if(a[i].w>a[j].w && a[i].s<a[j].s && f[i]<f[j]+1)
+			{
+				f[i]=f[j]+1;
+				pre[i]=j;
+			}
+		}
+		if(max<f[i])
+		{
+			max=f[i];
+			maxp=i;
+		}
+	}
+	printf("%d\n",max);
+	next[0]=a[maxp].pos;
+	int tmp=pre[maxp];
+	for(i=1;i<max;i++)
+	{
+
+		next[i]=a[tmp].pos;
+		tmp=pre[tmp];
+	}
+	for(i=max-1;i>=0;i--)
+		printf("%d\n",next[i]);
+//	fclose(stdin);
+	return 0;
+}

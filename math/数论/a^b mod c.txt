@@ -1,0 +1,25 @@
+#include<stdio.h>
+#define LL unsigned long long
+
+LL c;
+
+LL mod(LL m,LL n)
+{
+   if(!m) return 0;
+   return (((m&1)*n)%c+(mod(m>>1,n)<<1)%c)%c;
+}
+
+LL count(LL a,LL b)
+{
+   if(b==1) return a%c;
+   LL t=count(a,b/2);
+   if(b%2==0) return mod(t,t);
+   return mod(mod(t,t),a);
+}
+
+int main()
+{
+   LL a,b;
+   while(scanf("%llu %llu %llu",&a,&b,&c)!=EOF) printf("%llu\n",count(a,b)%c);
+   return 0;
+}

@@ -1,0 +1,55 @@
+#include<stdio.h>		//¶àÖØ±³°ü
+#define N 202
+int f[N],c[N],w[N],num[N],n,m;
+void ZeroOnePack(int cost,int weight)
+{
+	for(int j=m;j>=cost;j--)
+		if(f[j]<f[j-cost]+weight)
+			f[j]=f[j-cost]+weight;
+}
+void CompletePack(int cost,int weight)
+{
+	for(int j=cost;j<=m;j++)
+		if(f[j]<f[j-cost]+weight)
+			f[j]=f[j-cost]+weight;
+}
+void MultiplePack(int cost,int weight,int number)
+{
+	if(number==1)
+	{
+		ZeroOnePack(cost,weight);
+		return;
+	}
+	if(cost*number>=m)
+	{
+		CompletePack(cost,weight);
+		return ;
+	}
+	int k=1;
+	while(k<number)
+	{
+		ZeroOnePack(cost*k,weight*k);
+		number-=k;
+		k<<=1;
+	}
+	ZeroOnePack(cost*number,weight*number);
+}
+int main()
+{
+	int i,j,T;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d%d",&m,&n);
+		for(i=1;i<=n;i++)
+			scanf("%d%d%d",c+i,w+i,num+i);
+		for(i=0;i<=m;i++)
+			f[i]=0;
+		for(i=1;i<=n;i++)
+			MultiplePack(c[i],w[i],num[i]);
+		
+		printf("%d\n",f[m]);
+	}
+
+	return 0;
+}

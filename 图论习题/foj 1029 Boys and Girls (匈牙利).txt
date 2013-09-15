@@ -1,0 +1,94 @@
+?
+Home
+Problems
+Ranklist
+Contest
+Help
+Hi, kite
+Source Code
+RunID: 412540
+UserID: kite
+Submit time: 2011-08-31 10:39:12
+Language: Visual C++
+Length: 1244 Bytes.
+Result: Accepted
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+#include<vector>
+using namespace std;
+const int N=501;
+vector<int> g[N];
+int color[N],mat[N],vis[N];
+void dfs(int u,int col)
+{
+	color[u]=col;
+	int v;
+	for(int i=0;i<g[u].size();++i)
+	{
+		v=g[u][i];
+		if(!color[v])
+			dfs(v,-col);
+	}
+}
+int max_match(int u)
+{	
+
+	int v,t;
+	for(int i=0;i<g[u].size();++i)
+	{
+		v=g[u][i];
+		if(!vis[v])
+		{
+			vis[v]=1;t=mat[v];mat[v]=u;
+			if(t==-1 || max_match(t))return 1;
+			mat[v]=t;
+		}
+	}
+	return 0;
+}
+int main()
+{
+	//freopen("in.txt","r",stdin);
+	int n,x,y,num,i,j,ans;
+	while(scanf("%d",&n)!=EOF)
+	{
+		for(i=0;i<n;++i)
+			g[i].clear();
+		for(i=0;i<n;++i)
+		{
+			scanf("%d %*c %*c%d%*c",&x,&num);
+			for(j=0;j<num;++j)
+			{
+				scanf("%d",&y);
+				g[x].push_back(y);
+			}
+		}
+		memset(color,0,sizeof(color));
+		for(i=0;i<n;++i)
+		{
+			if(!color[i])
+				dfs(i,-1);
+		}
+		/*for(i=0;i<n;++i)
+			printf("%d ",color[i]);
+		printf("\n");
+		*/
+		memset(mat,-1,sizeof(mat));
+		ans=0;
+		for(i=0;i<n;++i)
+		{
+			if(color[i]==1 )
+			{
+				memset(vis,0,sizeof(vis));
+				ans+=max_match(i);
+			}
+		}
+		printf("%d\n",n-ans);
+	}
+	return 0;
+}
+
+

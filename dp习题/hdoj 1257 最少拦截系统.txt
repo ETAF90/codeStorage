@@ -1,0 +1,32 @@
+#include<stdio.h>
+#define N 1000000
+int a[N];			//思路：贪心，求每次去掉一串非升子序列，ans就是去掉了几串。测试数据：6 10 9 8 11 7 10，答案2
+int main()
+{
+	int n,i,cnt,ans,t;
+	while(scanf("%d",&n)!=EOF)
+	{
+		for(i=0;i<n;i++)
+			scanf("%d",a+i);
+		cnt=n;
+		ans=0;
+	
+		while(cnt)
+		{	
+			t=30001;
+			for(i=0;i<n;i++)
+			{
+				if(a[i]!=-1 && a[i]<=t)
+				{
+					t=a[i];
+					a[i]=-1;
+					cnt--;
+					
+				}
+			}
+			ans++;
+		}
+		printf("%d\n",ans);
+	}
+	return 0;
+}

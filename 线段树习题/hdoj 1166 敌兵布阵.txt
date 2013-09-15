@@ -1,0 +1,81 @@
+#include<iostream>
+using namespace std;
+int ans;		//记录所要查询区间的和。
+struct node
+{
+	int l,r,sum;//sum记录该段区间的所有数之和。
+}a[150000];
+void build(int i,int left,int right)//建树，每个区间的和初始为0.
+{
+	a[i].sum=0;
+	a[i].l=left;
+	a[i].r=right;
+	int mid=(left+right)>>1;
+	if(left==right)return;
+	build((i<<1),left,mid);
+	build((i<<1)+1,mid+1,right);
+}
+void add(int i,int x,int value)//添加
+{
+	a[i].sum+=value;			//无论所要添加的是那个点，只要这个点在现在的区间上，则现在的区间的sum都要+value。
+	if(a[i].l==x && a[i].r==x)	//当添加到目的点后，返回。
+		return ;
+	int mid=(a[i].l+a[i].r)>>1;
+	if(x<=mid)
+		add(i*2,x,value);
+	else
+		add(i*2+1,x,value);
+}
+void query(int i,int left,int right)//向下查找，知道找到所要查找的区间为止。ans+=a[i].sum;
+										//可能所要查找的区间被分成两个区间故ans初始0，每次ans+=a[i].value;
+{
+	if(a[i].l==left && a[i].r==right)
+	{ans+=a[i].sum;return ;}
+	int mid=(a[i].l+a[i].r)>>1;
+	if(right<=mid)
+		query(i*2,left,right);
+	else
+		if(left>mid)
+			query(i*2+1,left,right);
+		else
+		{
+			query(i*2,left,mid);
+			query(i*2+1,mid+1,right);
+		}
+}
+int main()
+{
+	int T,n,cases,i,tmp;
+	char s[10];
+	scanf("%d",&T);
+	for(cases=1;cases<=T;cases++)
+	{
+		printf("Case %d:\n",cases);
+		scanf("%d",&n);
+		build(1,1,n);
+		for(i=1;i<=n;i++)
+		{scanf("%d",&tmp); add(1,i,tmp);}
+		while(scanf("%s",s) && s[0]!='E')
+		{
+			if(s[0]=='A')
+			{
+				scanf("%d%d",&i,&tmp);
+				add(1,i,tmp);
+			}
+			if(s[0]=='S')
+			{
+				scanf("%d%d",&i,&tmp);
+				tmp=-tmp;
+				add(1,i,tmp);
+			}
+			if(s[0]=='Q')
+			{
+				scanf("%d%d",&i,&tmp);
+				ans=0;
+				query(1,i,tmp);
+				printf("%d\n",ans);
+			}
+		}
+	}
+	return 0;
+}

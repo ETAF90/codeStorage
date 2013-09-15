@@ -1,0 +1,106 @@
+/*
+	9393174 030902414 1151 Accepted 196K 16MS C++ 1885B 2011-10-04 21:24:09 
+	线段树求矩形面积并。
+*/
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+#define L(i) (i<<1)
+#define R(i) (i<<1|1)
+#define eps 1e-9
+inline int Mid(int x,int y){
+	return (x+y)>>1;
+}
+
+const int N=210;
+double Y[N];
+typedef struct line{
+	double x,y1,y2;
+	int type;
+	bool operator<(const line & z)const{
+		return x<z.x;
+	}
+}line;
+line L[N];
+typedef struct seg{
+	int l,r,cover;
+	double len;
+}seg;
+seg a[N+N+N];
+void build(int i,int l,int r)
+{
+	a[i].l=l;a[i].r=r;
+	a[i].cover=0;
+	if(l==r-1)
+		return;
+	int mid=Mid(l,r);
+	build(L(i),l,mid);
+	build(R(i),mid,r);
+}
+void Upby(int i){
+	if(a[i].cover>0){
+		a[i].len=Y[a[i].r]-Y[a[i].l];
+	}
+	else if(a[i].r-a[i].l==1)
+		a[i].len=0.0;
+	else{
+		a[i].len=a[L(i)].len+a[R(i)].len;
+	}
+}
+void Update(int i,double l,double r,int type){
+	if(fabs(Y[a[i].l]-l)<eps && fabs(Y[a[i].r]-r)<eps){
+		a[i].cover+=type;
+		Upby(i);
+		return;
+	}
+	int mid=Mid(a[i].l,a[i].r);
+	if(r<=Y[mid]+eps)
+		Update(L(i),l,r,type);
+	else if(l>=Y[mid]-eps)
+		Update(R(i),l,r,type);
+	else{
+		Update(L(i),l,Y[mid],type);
+		Update(R(i),Y[mid],r,type);
+	}
+	Upby(i);
+}
+int main()
+{
+	freopen("in.txt","r",stdin);
+	int n,nn,nnn,i,cases=1;
+	double x1,y1,x2,y2;
+	while(~scanf("%d",&n) && n){
+		for(i=0,nn=0;i<n;++i){
+			scanf("%lf%lf%lf%lf",&x1,&y1,&x2,&y2);
+			L[nn].x=x1;
+			L[nn].y1=y1;
+			L[nn].y2=y2;
+			Y[nn]=y1;
+			L[nn++].type=1;
+
+			L[nn].x=x2;
+			L[nn].y1=y1;
+			L[nn].y2=y2;
+			Y[nn]=y2;
+			L[nn++].type=-1;
+
+	}
+		sort(L,L+nn);
+		sort(Y,Y+nn);
+		nnn=unique(Y,Y+nn)-Y;
+		double sum=0;
+		build(1,0,nnn-1);
+		Update(1,L[0].y1,L[0].y2,L[0].type);
+		for(i=1;i<nn;++i){
+			sum+=(L[i].x-L[i-1].x)*a[1].len;
+			//printf("len= %.2lf\n",a[1].len);
+			Update(1,L[i].y1,L[i].y2,L[i].type);
+		}
+		printf("Test case #%d\nTotal explored area: %.2lf\n\n",cases++,sum);
+	}
+	return 0;
+}

@@ -1,0 +1,26 @@
+#include<iostream>
+using namespace std;
+int main()
+{
+	int h,w,n,i,j,x;
+	int a[200001];
+	while(scanf("%d%d%d",&h,&w,&n)!=EOF)
+	{
+		for(i=1;i<=h;i++)
+			a[i]=w;
+		for(i=0;i<n;i++)
+		{
+			scanf("%d",&x);
+			for(j=1;j<=h;j++)
+				if(a[j]>=x)
+				{
+					a[j]-=x;
+					printf("%d\n",j);
+					break;
+				}
+			if(j==h+1)
+				printf("-1\n");
+		}
+	}
+	return 0;
+}

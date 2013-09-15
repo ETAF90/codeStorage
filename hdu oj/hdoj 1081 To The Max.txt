@@ -1,0 +1,46 @@
+#include<stdio.h>			//最大连续子序列和的加强版。
+#define N 1000
+int a[N][N],n;
+int fun(int *p)
+{
+	int i,t=p[0],max=p[0];
+	for(i=1;i<n;i++)
+	{
+		if(t+p[i]<0)
+		{
+			t=0;
+		}
+		else
+			t+=p[i];
+		if(max<t)
+			max=t;
+	}
+	return max;
+}
+int main()
+{
+	int i,j,max,tmp;
+	while(scanf("%d",&n)!=EOF)
+	{
+		for(i=0;i<n;i++)
+			for(j=0;j<n;j++)
+				scanf("%d",&a[i][j]);
+		max=-1000000000;
+		for(i=0;i<n;i++)
+		{
+			tmp=fun(a[i]);
+			if(max<tmp)
+				max=tmp;
+			for(int k=i+1;k<n;k++)
+			{
+				for(j=0;j<n;j++)
+					a[i][j]+=a[k][j];
+				tmp=fun(a[i]);
+				if(max<tmp)
+					max=tmp;
+			}
+		}
+		printf("%d\n",max);
+	}
+	return 0;
+}

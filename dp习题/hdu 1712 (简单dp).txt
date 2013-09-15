@@ -1,0 +1,54 @@
+/*
+ *	4772151	2011-10-17 18:48:48	Accepted	1712	46MS	308K	715 B	C++	kite
+ *	题意：m个科目，n天，给出m*n的矩阵，w[i][j]表示第i课学习j天所能得到的值，求m科n天能得到的最大值。
+ *	解：dp[i][j]表示前i课，共j所能得到的最大值，
+ *	    状态转移：dp[i][j]=max(dp[i-1][j-k]);0<=k<=j;即讨论第i科要学习几天。
+ */
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+using namespace std;
+const int N=110;
+int m,n;
+int dp[N][N];
+int w[N][N];
+void output()
+{
+	for(int i=0;i<=m;++i)
+	{
+		for(int j=0;j<=n;++j)
+			printf("%d ",dp[i][j]);
+		printf("\n");
+			
+	}
+}
+void solve(){
+	
+	int i,j,k;
+	memset(dp,0,sizeof(dp));
+	for(i=1;i<=m;++i)
+		for(j=1;j<=n;++j){
+			dp[i][j]=dp[i-1][j];
+			for(k=1;k<=j;++k)
+			dp[i][j]=max(dp[i-1][j-k]+w[i][k],dp[i][j]);
+		}
+//	output();
+	printf("%d\n",dp[m][n]);
+}
+int main()
+{
+	freopen("in.txt","r",stdin);
+	int i,j;
+	while(scanf("%d%d",&m,&n)!=EOF){
+		if(m==0 && n==0)break;
+		for(i=1;i<=m;++i)
+			for(j=1;j<=n;++j){
+				
+				scanf("%d",&w[i][j]);
+			}
+		solve();
+		
+	}
+	return 0;
+}

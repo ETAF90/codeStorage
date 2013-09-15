@@ -1,0 +1,152 @@
+/*
+ *	4546047	2011-09-05 11:05:40	Accepted	3986	328MS	2296K	2459 B	G++	kite
+ *	先找出最短路径，标记出来。然后枚举最短路径上的边，每次再求一次最短路。还可以加上优化：对于两个点u，v，只存最短和次短边。枚举到某边时的用次短边代替最短边，对整个图求最短路。
+*/
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+const int N=1010,M=100010;
+const int INF=0x3fffffff;
+
+//-------------------
+
+int head[M],next[M];
+struct edge
+{
+	int u,v,len;
+}E[M];
+bool f[M];
+void addedge(int i,int u,int v,int len)
+{
+	E[i].u=u;E[i].v=v;E[i].len=len;
+	next[i]=head[u];
+	head[u]=i;
+
+}
+//-----------------------
+int dist[N],vis[N],pre[N];
+int n,m;
+
+struct heap_node
+{
+	int v,dist;
+	heap_node(){}
+	heap_node(int v1,int dist1):v(v1),dist(dist1){}
+	bool operator<(const struct heap_node& z)const
+	{
+		return dist>z.dist;
+	}
+	
+}C[M];
+
+int Dijk(int s,int t)
+{
+	int i,u,v,top=0,p;
+	for(i=1;i<=n;++i)
+	{
+		dist[i]=INF;
+		vis[i]=0;
+	}
+	dist[s]=0;
+	pre[s]=-1;
+	C[top++]=heap_node(s,0);
+	while(top>0)
+	{
+		pop_heap(C,C+top);
+		--top;
+		u=C[top].v;
+		vis[u]=1;
+		if(u==t)
+			return dist[t];
+		p=head[u];
+		while(p!=-1)
+		{
+			v=E[p].v;
+			if(!vis[v] && dist[v]>E[p].len+dist[u])
+			{
+				dist[v]=E[p].len+dist[u];
+				C[top++]=heap_node(v,dist[v]);
+				
+				push_heap(C,C+top);
+				pre[v]=p;
+			}
+			p=next[p];
+		}
+	}
+	return dist[t];
+
+}
+int Dijk1(int s,int t)
+{
+	int i,u,v,top=0,p;
+	for(i=1;i<=n;++i)
+	{
+		dist[i]=INF;
+		vis[i]=0;
+	}
+	dist[s]=0;
+	C[top++]=heap_node(s,0);
+	while(top>0)
+	{
+		pop_heap(C,C+top);
+		--top;
+		u=C[top].v;
+		vis[u]=1;
+		if(u==t)
+			return dist[t];
+		p=head[u];
+		while(p!=-1)
+		{
+			v=E[p].v;
+			if(!vis[v] && !f[p] && dist[v]>E[p].len+dist[u])
+			{
+				dist[v]=E[p].len+dist[u];
+				C[top++]=heap_node(v,dist[v]);
+				
+				push_heap(C,C+top);
+			}
+			p=next[p];
+		}
+	}
+	return dist[t];
+
+}
+//-------------------------------------------------------------
+int main()
+{
+	freopen("in","r",stdin);
+	int T,i,j,ans,u,v,len,tmp;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d%d",&n,&m);
+		memset(head,-1,sizeof(head));
+		for(i=0;i<m;++i)
+		{
+			scanf("%d%d%d",&u,&v,&len);
+			addedge(i,u,v,len);
+			addedge(i+m,v,u,len);
+		}
+		ans=Dijk(1,n);
+		v=n;
+		memset(f,0,sizeof(f));
+		while(pre[v]!=-1)
+		{
+			f[pre[v]]=1;
+			tmp=Dijk1(1,n);
+			ans=ans>tmp?ans:tmp;
+			if(ans==INF)
+				break;
+			f[pre[v]]=0;
+			v=E[pre[v]].u;
+		}
+
+		if(ans==INF)
+			printf("-1\n");
+		else
+			printf("%d\n",ans);
+	}
+	return 0;
+}

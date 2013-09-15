@@ -1,0 +1,95 @@
+#include<cstdio>
+#include<iostream>
+#include<string>
+#include<algorithm>
+using namespace std;
+class node
+{
+public:
+	int x;
+	string s;
+};
+node a[10001];
+int cmp(const node& a,const node& b)
+{
+	if(a.s<b.s)
+		return 1;
+	else
+		return 0;
+}
+int main()
+{
+	int T,n,i,tmp,b1,b2,b3,b4;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d",&n);
+		for(i=0;i<n;i++)
+		{
+			scanf("%d",&a[i].x);
+			a[i].s.resize(0);
+			tmp=a[i].x;
+			b1=tmp%10;
+			tmp/=10;
+			b2=tmp%10;
+			tmp/=10;
+			b3=tmp%10;
+			tmp/=10;
+			b4=tmp%10;
+			switch(b4)
+			{//M MM MMM 
+			case 0:break;
+			case 1:a[i].s+="M";break;
+			case 2:a[i].s+="MM";break;
+			case 3:a[i].s+="MMM";break;
+			}
+			switch(b3)
+			{//C CC CCC CD D DC DCC DCCC CM 
+			case 0:break;
+			case 1:a[i].s+="C";break;
+			case 2:a[i].s+="CC";break;
+			case 3:a[i].s+="CCC";break;
+			case 4:a[i].s+="CD";break;
+			case 5:a[i].s+="D";break;
+			case 6:a[i].s+="DC";break;
+			case 7:a[i].s+="DCC";break;
+			case 8:a[i].s+="DCCC";break;
+			case 9:a[i].s+="CM";break;
+			}
+			switch(b2)
+			{//X XX XXX XL L LX LXX LXXX XC 
+			case 0:break;
+			case 1:a[i].s+="X";break;
+			case 2:a[i].s+="XX";break;
+			case 3:a[i].s+="XXX";break;
+			case 4:a[i].s+="XL";break;
+			case 5:a[i].s+="L";break;
+			case 6:a[i].s+="LX";break;
+			case 7:a[i].s+="LXX";break;
+			case 8:a[i].s+="LXXX";break;
+			case 9:a[i].s+="XC";break;
+				
+			}
+			switch(b1)
+			{//I II III IV V VI VII VIII IX 
+			case 0: break;
+			case 1: a[i].s+="I";break;
+			case 2: a[i].s+="II";break;
+			case 3: a[i].s+="III";break;
+			case 4: a[i].s+="IV";break;
+			case 5: a[i].s+="V";break;
+			case 6: a[i].s+="VI";break;
+			case 7: a[i].s+="VII";break;
+			case 8: a[i].s+="VIII";break;
+			case 9: a[i].s+="IX"; break;
+			}
+		}
+		sort(a,a+n,cmp);
+		printf("%d",a[0].x);
+		for(i=1;i<n;i++)
+			printf(" %d",a[i].x);
+		printf("\n");
+		
+	}
+	return 0;
+}

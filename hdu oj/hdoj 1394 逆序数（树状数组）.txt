@@ -1,0 +1,70 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <list>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#define N 5001
+using namespace std;
+int c[N],a[N],n;
+int getsum(int i)
+{
+
+	int sum=0;
+	while(i>0)
+	{
+		sum+=c[i];
+		i-=i&-i;
+	}
+	return sum;
+}
+void modify(int i)
+{	
+	while(i<=n)
+	{
+		c[i]+=1;
+		i+=i&-i;
+	}
+}
+int main()
+{
+//	freopen("test.txt","r",stdin);
+	int i,sum,min;
+	while(scanf("%d",&n)!=EOF)
+	{
+		sum=0;
+		memset(c,0,sizeof(c));
+		for(i=1;i<=n;i++)
+		{
+			scanf("%d",a+i);
+		}
+		for(i=n;i>=1;i--)
+		{
+			sum+=getsum(a[i]);
+			modify(a[i]+1);
+		}
+
+		min=sum;
+		for(i=1;i<=n;i++)
+		{
+			sum=sum+(n-a[i]-1)-a[i];
+			if(min>sum)
+				min=sum;
+		}
+		printf("%d\n",min);
+	
+	}
+//	fclose(stdin);
+	return 0;
+}

@@ -1,0 +1,53 @@
+/*
+	题解：
+	题目大意：
+
+已知一个以（0，0）为圆心的圆和圆上的一点（x0,y0）求圆上的另外两点（x1,y1,）(x2,y2)，使得向量（x1,y1）(x2,y2)和(x0,y0)各个向量两两之间夹角为120度
+
+前几天复习的向量的知识终于派上用场了^0^
+
+此题主要用到向量的叉乘和点乘列出两个二元一次方程组
+
+1.
+
+（x0,y0）X (x1,y1) = sin(120)*R^2     (r为圆的半径)
+
+(x0,y0) * (x1,y1) = cos(120)*R^2
+
+结果为：
+
+          x1=b*x0-a*y0;     a=sin120
+          y1=b*y0+a*x0;    b=cos120;
+
+2.
+
+（x0,y0）X (x2,y2) = -sin(120)*R^2     (r为圆的半径)
+
+(x0,y0) * (x2,y2) = cos(120)*R^2
+
+
+
+
+
+*/
+#include<stdio.h>
+#include<math.h>
+int main()
+{
+	double x0,x1,x2,y0,y1,y2,a=sqrt(3.0)/2,b=-0.5;
+	int T;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%lf%lf",&x0,&y0);
+		x1=b*x0-a*y0;
+		y1=a*x0+b*y0;
+		x2=a*y0+b*x0;
+		y2=b*y0-a*x0;
+		if(y1<y2 || abs(y1-y2)<0.0005 && x1<x2)
+			printf("%.3lf %.3lf %.3lf %.3lf\n",x1,y1,x2,y2);
+		else
+			printf("%.3lf %.3lf %.3lf %.3lf\n",x2,y2,x1,y1);
+	}
+	return 0;
+}

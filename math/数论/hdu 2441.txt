@@ -1,0 +1,107 @@
+
+ 
+View Code
+Problem : 2441 ( ACM(Array Complicated Manipulation) )     Judge Status : Accepted
+RunId : 4670675    Language : Java    Author : kite
+Code Render Status : Rendered By HDOJ Java Code Render Version 0.01 Beta
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+import java.util.*;
+import java.io.*;
+import java.math.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        int cnt, now;
+        long i;
+        BigInteger x;
+        Scanner cin = new Scanner(System.in);
+        while (cin.hasNextBigInteger()) {
+            x = cin.nextBigInteger();
+            if (x.compareTo(BigInteger.ZERO) == 0) {
+                break;
+            }
+            cnt = 0;
+
+            for (i = 2; x.compareTo(BigInteger.ONE) != 0; ++i) {
+                if (x.mod(BigInteger.valueOf(i)).compareTo(BigInteger.ZERO) == 0) {//ÈôÐ´³Éx.mod(BigInteger.valueOf(i))==BigInteger.ZEROÔò³¬Ê±¡£
+                    ++cnt;
+                    now = 0;
+                    while (x.mod(BigInteger.valueOf(i)).compareTo(BigInteger.ZERO) == 0) {
+                        ++now;
+                        if (now > 1) {
+                            cnt = -1;
+                            break;
+                        }
+                        x = x.divide(BigInteger.valueOf(i));
+                    }
+                    if (now > 1) {
+                        break;
+                    }
+                }
+            }
+            // System.out.println("cnt="+cnt);
+            if (cnt > 0) {
+                System.out.println("yes");
+            } else {
+                System.out.println("no");
+            }
+        }
+    }
+}
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+import java.util.*;
+import java.io.*;
+import java.math.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        int cnt, now;
+        long i;
+        BigInteger x;
+        Scanner cin = new Scanner(System.in);
+        while (cin.hasNextBigInteger()) {
+            x = cin.nextBigInteger();
+            if (x.compareTo(BigInteger.ZERO) == 0) {
+                break;
+            }
+            cnt = 0;
+
+            for (i = 2; x.compareTo(BigInteger.ONE) != 0; ++i) {
+                if (x.mod(BigInteger.valueOf(i)).compareTo(BigInteger.ZERO) == 0) {
+                    ++cnt;
+                    now = 0;
+                    while (x.mod(BigInteger.valueOf(i)).compareTo(BigInteger.ZERO) == 0) {
+                        ++now;
+                        if (now > 1) {
+                            cnt = -1;
+                            break;
+                        }
+                        x = x.divide(BigInteger.valueOf(i));
+                    }
+                    if (now > 1) {
+                        break;
+                    }
+                }
+            }
+            // System.out.println("cnt="+cnt);
+            if (cnt > 0) {
+                System.out.println("yes");
+            } else {
+                System.out.println("no");
+            }
+        }
+    }
+}
+ 

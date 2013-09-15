@@ -1,0 +1,62 @@
+/*
+算法分析：典型的DP!
+
+n     1 ->?
+
+n     1 ->2=min(1*2,1*3,1*5,1*7)
+
+n     1 ->2 ->3=min(2*2,1*3,1*5,1*7)
+
+n     1 ->2 ->3 -> 4 = min(2*2,2*3,1*5,1*7)
+
+n     1 ->2 ->3 -> 4 ->5= min(3*2,2*3,1*5,1*7)
+(n)=min(F(i)*2,F(j)*3,F(k)*5,F(m)*7)
+
+                       (n>i,j,k,m)
+
+特别的：i,j,k,m 只有在本项被选中后才移动
+
+
+
+*/
+#include<stdio.h>								
+#define N 5842
+int f[N+3];
+int min(int a,int b)
+{
+	if(a<b)
+		return a;
+	else
+		return b;
+}
+int main()
+{
+	int n,i,a,b,c,d,Min;
+	f[1]=1;
+	a=b=c=d=1;
+	for(i=2;i<=N;i++)
+	{
+		Min=min(f[a]*2,min(f[b]*3,min(f[c]*5,f[d]*7)));
+		if(f[a]*2==Min)
+			a++;
+		if(f[b]*3==Min)
+			b++;
+		if(f[c]*5==Min)
+			c++;
+		if(f[d]*7==Min)
+			d++;
+		f[i]=Min;
+	}
+	while(scanf("%d",&n)&& n)
+	{
+		if(n%10==1&&n%100!=11)
+			printf("The %dst humble number is %d.\n",n,f[n]);
+		else if(n%10==2&&n%100!=12)
+			printf("The %dnd humble number is %d.\n",n,f[n]);
+		else if(n%10==3&&n%100!=13)
+			printf("The %drd humble number is %d.\n",n,f[n]);
+		else
+			printf("The %dth humble number is %d.\n",n,f[n]);
+	}
+	return 0;
+}

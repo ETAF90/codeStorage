@@ -1,0 +1,90 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <set>
+#include <map>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <list>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <ctime>
+#include<iostream>
+using namespace std;
+#define mod 9901
+#define N 10000
+typedef unsigned __int64 LL;
+LL prime[N];
+LL cnt[N];
+LL Pow(LL p,LL n)  //p^n
+{
+	LL ans=1;
+	while(n)
+	{
+		if(n&1)
+			ans=ans*p%mod;
+		n>>=1;
+		p=p*p%mod;
+	}
+	return ans;
+}
+
+LL Sum(LL p,LL m)   //  1+p^1+p^2+p^3......p^m
+					//  当m为奇数时： sum=(1+p^(m/2+1))+p*(1+p^(m/2+1))+p^2*(1+p^(m/2+1))+...+p^(m/2)*(1+(p^(m/2+1))
+					//                sum=(1+p+p^2+....p^(m/2))*p^(m/2+1)
+					//	出现递归式：  Sum(p,m)=Sum(p,m/2)*p^(m/2+1);
+					//  当m为偶数时： sum=(1+p^(m/2+1))+p*(1+p^(m/2+1))+....p^(m/2-1)*(1+p^(m/2+1))   +p^(m/2);
+					//                sum=(1+p+p^2+....p^(m/2-1))*p^(m/2+1)  + p^(m/2);
+					//  出现递归式：  Sum(p,m)=Sum(p,m/2-1)*p^(m/2+1)   +  p^(m/2);
+{
+	if(m==0)
+		return 1;   //此处不可写if(m==1)return 1+p;
+					// 因为对于Sum(p,m/2-1)当m=2时，m/2-1=0,所以必须要有Sum(p,0).
+	if(m&1)
+		return Sum(p,m/2)*(1+Pow(p,m/2+1))%mod;
+	else
+		return (Sum(p,m/2-1)*(1+Pow(p,m/2+1))+Pow(p,m/2))%mod;
+
+}
+int main()
+{
+	//freopen("test.txt","r",stdin);
+	LL a,b,ans;
+	int i,c;
+while(	scanf("%I64u%I64u",&a,&b)!=EOF)
+{
+
+		memset(prime,0,sizeof(prime));
+		memset(cnt,0,sizeof(cnt));
+		for(i=2,c=0;i*i<=a;i++)//若改成 a>1 则会超时。
+		{
+			if(a%i==0)
+			{
+				prime[c]=i;
+				while(a%i==0)
+				{a/=i;cnt[c]++;}
+				c++;
+			}
+		}
+		if(a!=1)//a为素数
+		{
+			prime[c]=a;
+			cnt[c]=1;
+			c++;
+		}
+		ans=1;
+		for(i=0;i<c;i++)
+		{
+			ans=ans*Sum(prime[i],cnt[i]*b)%mod;
+		}
+		printf("%I64u\n",ans);
+	
+}//	fclose(stdin);
+	return 0;
+}

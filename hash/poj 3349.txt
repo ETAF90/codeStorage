@@ -1,0 +1,109 @@
+/*
+ *	hash »Î√≈
+ *	
+ *
+*/
+
+#include<iostream>
+#include<cstdio>
+#include<vector>
+using namespace std;
+
+const int BIG_PRIME=9991;
+typedef struct snow{
+
+	int a[6];
+	bool operator == (const snow& xsnow){
+
+		for(int i=0;i<6;i++){
+
+			bool flag=true;
+			for(int j=0;j<6;j++){
+
+				if(a[(i+j)%6]!=xsnow.a[j]){
+					
+					flag=false;
+					break;
+				}
+
+			}
+	
+			if(flag){
+
+				return true;
+			}
+		}
+		int b[6];
+		for(int i=0;i<6;i++)
+			b[i]=a[5-i];
+		
+		for(int i=0;i<6;i++){
+
+			bool flag=true;
+			for(int j=0;j<6;j++){
+
+				if(b[(i+j)%6]!=xsnow.a[j]){
+					
+					flag=false;
+					break;
+				}
+
+			}
+	
+			if(flag){
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+}snow;
+
+int hash(snow s){
+
+	return (s.a[0]+s.a[1]+s.a[2]+s.a[3]+s.a[4]+s.a[5])%BIG_PRIME;
+
+}
+
+
+int main(){
+
+	
+	freopen("in.txt","r",stdin);
+	int n;
+	snow cur;
+	while(scanf("%d",&n)!=EOF){
+
+		vector<snow> hash_table[BIG_PRIME+1];
+		bool flag=false;
+		for(int i=0;i<n;++i){
+
+			scanf("%d %d %d %d %d %d",&cur.a[0],&cur.a[1],&cur.a[2],&cur.a[3],&cur.a[4],&cur.a[5]);
+
+			if(!flag){
+
+				int p = hash(cur);
+
+				for(int i=0;i< hash_table[p].size();++i){
+
+					if(cur == hash_table[p][i])
+					{
+						puts("Twin snowflakes found.");
+						flag=true;
+						break;
+					}
+				}
+				if(!flag){
+					
+					hash_table[p].push_back(cur);
+				}
+			}
+
+		}
+		if(!flag)
+			puts("No two snowflakes are alike.");
+	}
+
+	return 0;
+}

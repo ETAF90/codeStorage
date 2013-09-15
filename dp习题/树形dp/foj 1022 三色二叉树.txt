@@ -1,0 +1,68 @@
+/*
+	foj 1022 三色二叉树
+	dp：
+	f1[k][0]表示以k为父节点，第k个节点不涂绿色的最大绿色数
+	f1[k][1]表示以k为父节点，第k个节点涂绿色的最大绿色数
+	f2[k][0]表示以k为父节点，第k个节点不涂绿色的最小绿色数
+	f2[k][1]表示以k为父节点，第k个节点涂绿色的最小绿色数。
+*/
+
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<algorithm>
+using namespace std;
+const int N=10001;
+char tree[N];
+int f1[N][2],f2[N][2];
+
+int Pre_order(int& k){
+	
+	int t=k;
+	if(tree[k]=='0'){
+		f1[k][0]=f2[k][0]=0;
+		f1[k][1]=f2[k][1]=1;
+		
+	}
+	else if(tree[k]=='1'){
+		
+		
+		Pre_order(++k);
+		f1[t][0]=max(f1[t+1][0],f1[t+1][1] );
+		f1[t][1]=f1[t+1][0]+1;
+		f2[t][0]=min(f2[t+1][0],f2[t+1][1] );
+		f2[t][1]=f2[t+1][0]+1;
+	}
+	else if(tree[k]=='2'){
+
+		int lc=Pre_order(++k);
+		int rc=Pre_order(++k);
+		f1[t][0]=max( f1[lc][0]+f1[rc][0], max(f1[lc][1]+f1[rc][0],f1[lc][0]+f1[rc][1] ) );
+		f1[t][1]=f1[lc][0]+f1[rc][0]+1;
+		f2[t][0]= min( f2[lc][1]+f2[rc][0],f2[lc][0]+f2[rc][1] );
+		f2[t][1]=f2[lc][0]+f2[rc][0]+1;
+	}
+	return t;
+}
+
+
+void solve(){
+	
+	int k=0;
+	
+	memset(f1,0,sizeof(f1));
+	memset(f2,0,sizeof(f2));
+
+	Pre_order(k);
+	printf("%d %d\n",max(f1[0][1],f1[0][0]),min(f2[0][0],f2[0][1]) );
+	
+}
+int main(){
+	//freopen("in.txt","r",stdin);
+	while(scanf(" %s",tree)!=EOF){
+		
+		solve();
+	}	
+	return 0;
+}

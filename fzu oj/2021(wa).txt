@@ -1,0 +1,142 @@
+#include<stdio.h>
+#include<math.h>
+#define E 1e-9
+#define min(a,b) (a<b?a:b)
+#define max(a,b) (a>b?a:b)
+double x[3],y[3],z[3],xi,yi,xj,yj;
+bool flag;
+struct Vector
+{double x,y;};
+double cross(const struct Vector &x,const struct Vector &y)
+{return x.x*y.y-x.y*y.x;}
+bool Ison(const struct Vector &a,const struct Vector &b,const struct Vector &c,const struct Vector &d )
+{
+	struct Vector u,v,w;
+	u.x=b.x-a.x;
+	u.y=b.y-a.y;
+	v.x=c.x-a.x;
+	v.y=c.y-a.y;
+	w.x=d.x-a.x;
+	w.y=d.y-a.y;
+	if(fabs(cross(u,v))<E)
+	{
+		
+		if(c.x>=min(a.x,b.x) && c.x<=max(a.x,b.x) && c.y>=min(a.y,b.y) && c.y<=max(a.y,b.y))
+		{
+			flag=true;
+			if(fabs(cross(u,w))<E)
+				return true;
+		}
+		else
+			if(fabs(cross(u,w))<E && ((c.x-a.x)*(d.x-a.x)<0 || (c.y-a.y)*(d.y-a.y)<0))
+			{
+				return true;
+			}
+	}
+	if(fabs(cross(u,w))<E)
+	{
+		if(d.x>=min(a.x,b.x) && d.x<=max(a.x,b.x) && d.y>=min(a.y,b.y) && d.y<=max(a.y,b.y))
+		{
+			flag=true;
+			if(fabs(cross(u,v))<E)
+				return true;
+		}
+		else
+			if(fabs(cross(u,v))<E && ((c.x-a.x)*(d.x-a.x)<0 || (c.y-a.y)*(d.y-a.y)<0))
+				return true;
+	}
+	return false;
+}
+bool Isin(const struct Vector &a,const struct Vector &b,const struct Vector &x)
+{
+	if(cross(a,x)*cross(b,x)<0)
+		return true;
+	return false;
+}
+bool Interact(struct Vector a,struct Vector b,struct Vector c,struct Vector d)
+{																	  
+	double x1,y1,x2,y2,x3,y3,t;										  
+	x1=a.x-b.x;
+	y1=a.y-b.y;
+	x2=c.x-b.x;
+	y2=c.y-b.y;
+	x3=d.x-b.x;
+	y3=d.y-b.y;
+	t=(x1*y2-x2*y1)*(x1*y3-x3*y1);
+	if(t<0)
+		return true;
+	if((x1*y2-x2*y1)==0)
+	{
+		if(c.x>min(a.x,b.x) && c.x<max(a.x,b.x))
+			return true;
+	}
+	if((x1*y3-x3*y1)==0)
+	{
+		if(d.x>min(a.x,b.x) && d.x<max(a.x,b.x))
+			return true;
+	}
+	return false;
+}
+int main()
+{
+	int m,i;
+	struct Vector p[3],ci,di,u,v,w;
+	while(scanf("%lf%lf%lf%lf%lf%lf",&p[0].x,&p[0].y,&p[1].x,&p[1].y,&p[2].x,&p[2].y)!=EOF)
+	{
+		scanf("%d",&m);
+		while(m--)
+		{
+			scanf("%lf%lf%lf%lf",&ci.x,&ci.y,&di.x,&di.y);
+			flag=false;
+			if(Ison(p[0],p[1],ci,di) || Ison(p[1],p[2],ci,di) || Ison(p[0],p[2],ci,di))
+			{
+				printf("ON_EDGE\n");
+				continue;
+			}
+			if(flag)
+			{
+				printf("SIM_INT\n");
+				continue;
+			}
+			u.x=p[1].x-p[0].x;u.y=p[1].y-p[0].y;
+			v.x=p[2].x-p[0].x;v.y=p[2].y-p[0].y;
+			w.x=ci.x-p[0].x;w.y=ci.y-p[0].y;
+			if(Isin(u,v,w))
+			{
+				u.x=p[0].x-p[2].x;u.y=p[0].y-p[2].y;
+				v.x=p[1].x-p[2].x;v.y=p[1].y-p[2].y;
+				w.x=ci.x-p[2].x;w.y=ci.y-p[2].y;
+				if(Isin(u,v,w))
+				{
+					w.x=di.x-p[2].x;w.y=di.y-p[2].y;
+					if(Isin(u,v,w))
+					{
+						u.x=p[1].x-p[0].x;u.y=p[1].y-p[0].y;
+						v.x=p[2].x-p[0].x;v.y=p[2].y-p[0].y;
+						w.x=di.x-p[0].x;w.y=di.y-p[0].y;
+						if(Isin(u,v,w))
+						{
+							printf("IN_SIDE\n");
+							continue;
+						}
+					}
+					else
+					{
+						printf("SIM_INT\n");
+						continue;
+					}
+				}
+				
+			}
+			if((Interact(p[0],p[1],ci,di)&&Interact(ci,di,p[0],p[1])) || (Interact(p[1],p[2],ci,di)&&Interact(ci,di,p[1],p[2])) || (Interact(p[0],p[2],ci,di)&&Interact(ci,di,p[0],p[2])))
+			{
+				printf("SIM_INT\n");
+					continue;
+			}
+			printf("OUT_SIDE\n");
+		}
+		
+	}
+	return 0;
+}
+

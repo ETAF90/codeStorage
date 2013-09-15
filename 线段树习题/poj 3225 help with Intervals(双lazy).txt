@@ -1,0 +1,258 @@
+/*
+ *	
+ *	9470263	030902414	3225	Accepted	5160K	1500MS	C++	3616B	2011-10-23 09:56:11
+ *  区间操作，lazy标志有两种一种是覆盖，一种是取反。
+ 一般遇到的标记只有两种（反正我现在就见过两种）
+
+一种是与原来内容无关的，也就是覆盖的标记，
+
+一种是与原来内容相关的，也就是修改的标记。
+
+ 
+
+如果是覆盖的标记，更新时就比较简单，以为一旦强制覆盖，以前干过啥事就都是过眼云烟了，
+
+直接覆盖就行。
+
+ 
+
+而修改则麻烦一些，如果之前没有标记，自然好办，如果以前有标记的话，就看看是覆盖标记还是修改标记，
+
+修改标记一般都是可以修改修改标记的，如果是修改标记就直接修改标记就好了，
+
+但是如果是覆盖标记，就得看看了，如果不能直接修改，那就把覆盖标记下传然后再进行修改，
+
+否则就直接修改覆盖标记。
+ */
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+using namespace std;
+#define L(i) (i<<1)
+#define R(i) (i<<1|1)
+inline int Mid(int x,int y){
+	return (x+y)>>1;
+}
+const int N= 65535;
+typedef struct seg{
+	
+	int l,r,v;
+	bool lazy[3];
+
+}seg;
+seg a[N*8];
+
+vector<seg> ans;
+
+inline void process(int i,int type){
+	
+	if(type==0)
+		a[i].v=0;
+	if(type==1)
+		a[i].v=1;
+	if(type==2 && a[i].v!=-1)
+		a[i].v=1-a[i].v;
+	
+}
+inline void Upby(seg& p,seg& lc,seg& rc){
+
+	if(lc.v==rc.v)
+		p.v=lc.v;
+	else
+		p.v=-1;
+}
+inline void Pushdown(int i){
+	
+	if(a[i].l==a[i].r)
+		return;
+	if(a[i].lazy[0]){
+		
+		a[L(i)].lazy[0]=a[R(i)].lazy[0]=1;
+		a[L(i)].lazy[1]=a[R(i)].lazy[1]=0;
+		a[L(i)].lazy[2]=a[R(i)].lazy[2]=0;
+		process(L(i),0);
+		process(R(i),0);
+		a[i].lazy[0]=0;
+	}
+	if(a[i].lazy[1]){
+		
+		a[L(i)].lazy[1]=a[R(i)].lazy[1]=1;
+		a[L(i)].lazy[0]=a[R(i)].lazy[0]=0;
+		a[L(i)].lazy[2]=a[R(i)].lazy[2]=0;
+		process(L(i),1);
+		process(R(i),1);
+		a[i].lazy[1]=0;
+	}
+	if(a[i].lazy[2]){
+		
+		a[R(i)].lazy[2]^=1;
+		a[L(i)].lazy[2]^=1;
+		process(L(i),2);
+		process(R(i),2);
+		a[i].lazy[2]=0;
+	}
+	
+}
+ 
+void build(int i,int l,int r){
+	
+	a[i].l=l;
+	a[i].r=r;
+	a[i].lazy[0]=a[i].lazy[1]=a[i].lazy[2]=0;
+	if(l==r)return;
+	int mid=Mid(l,r);
+	build(L(i),l,mid);
+	build(R(i),mid+1,r);
+}
+void Update(int i,int l,int r,int type){
+	
+	Pushdown(i);
+	if(a[i].l==l && a[i].r==r){
+		
+		process(i,type);
+		if(type!=2)
+			a[i].lazy[0]=a[i].lazy[1]=a[i].lazy[2]=0;
+		a[i].lazy[type]=1;
+		return;
+	}
+	int mid=Mid(a[i].l,a[i].r);
+	if(r<=mid){
+		Update(L(i),l,r,type);
+	}
+	else if(l>mid)
+		Update(R(i),l,r,type);
+	else {
+		
+		Update(L(i),l,mid,type);
+		Update(R(i),mid+1,r,type);
+	}
+	Upby(a[i],a[L(i)],a[R(i)]);
+}
+void Query(int i,int l,int r){
+	
+	Pushdown(i);
+	if(a[i].v!=-1){
+		
+		if(a[i].v==1)
+			ans.push_back(a[i]);
+		return;
+	}
+	int mid=Mid(a[i].l,a[i].r);
+	if(r<=mid)
+		Query(L(i),l,r);
+	else if(l>mid)
+	{
+		Query(R(i),l,r);
+	}
+	else{
+		
+		Query(L(i),l,mid);
+		Query(R(i),mid+1,r);
+	}
+}
+
+
+void output(){
+	
+	int i;
+	printf("ans.size()=%d\n",ans.size());
+	for(i=0;i<ans.size();++i)
+		printf("%d %d\n",ans[i].l,ans[i].r);
+	printf("\n");
+}
+int main(){
+	
+	freopen("in.txt","r",stdin);
+	char op,lx,rx;
+	int l,r;
+	build(1,0,N+N);
+	while(scanf(" %c %c%d %*c%d %c",&op,&lx,&l,&r,&rx)!=EOF){
+		
+		l<<=1;
+		r<<=1;
+		if(lx=='(')
+			l++;
+		if(rx==')')
+			r--;
+		//l>r时为空集。
+		if(op=='U' && l<=r){
+			
+			Update(1,l,r,1);
+
+		}
+		if(op=='I'){
+			
+			if(l>r)
+			{
+				Update(1,0,N+N,0);
+				continue;
+			}
+			if(l>0)
+				Update(1,0,l-1,0);
+			if(r<N+N)
+				Update(1,r+1,N+N,0);
+		}
+		if(op=='D' && l<=r){
+			
+			Update(1,l,r,0);
+		}
+		if(op=='C'){
+			
+			if(l>r){
+				
+				Update(1,0,N+N,0);
+				continue;
+			}
+				
+			if(l>0)
+				Update(1,0,l-1,0);
+			if(r<N+N)
+				Update(1,r+1,N+N,0);
+			Update(1,l,r,2);
+		}
+		if(op=='S' && l<=r){
+			
+			Update(1,l,r,2);
+		}
+	}
+	Query(1,0,N+N);
+	if(ans.size()==0)
+	{
+		printf("empty set\n");
+		return 0;
+	}
+	//output();
+	l=ans[0].l,r=ans[0].r;
+	int i=1;
+	while(i<ans.size())
+	{
+		while( (i<ans.size() )&& (ans[i-1].r+1>=ans[i].l ) )++i;
+		if(i==ans.size())break;
+		r=ans[i-1].r;
+		if(l&1)
+			printf("(%d,",(l-1)>>1);
+		else
+			printf("[%d,",l>>1);
+		if(r&1)
+			printf("%d)",(r+1)>>1);
+		else
+			printf("%d]",(r)>>1);
+		printf(" ");
+		l=ans[i].l;
+		++i;
+	}
+	r=ans[ans.size()-1].r;
+	if(l&1)
+			printf("(%d,",(l-1)>>1);
+		else
+			printf("[%d,",l>>1);
+		if(r&1)
+			printf("%d)\n",(r+1)>>1);
+		else
+			printf("%d]\n",(r)>>1);
+
+	
+	return 0;
+}

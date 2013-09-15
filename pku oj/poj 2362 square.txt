@@ -1,0 +1,82 @@
+#includeiostream
+#includealgorithm
+using namespace std;
+int a[22],n,b;
+bool used[22],flag;
+bool cmp(int x,int y)
+{
+	return xy;
+}
+void dfs(int k,int len,int cnt)
+{
+	int i;
+	if(cnt==1)
+	{
+		flag=true;
+		return;
+	}
+	if(len==0)
+	{
+		for(i=0;in && used[i];i++);
+		used[i]=true;
+		dfs(i+1,b-a[i],cnt-1);
+		if(flag)
+			return;
+		used[i]=false;
+	}
+	else
+	{
+		for(int pre=0,i=k;in;i++)
+		{
+			if(!used[i] && a[i]!=pre && a[i]=len)		 pre ºÙ÷¶
+			{
+				pre=a[i];
+				used[i]=true;
+				dfs(i+1,len-a[i],cnt);
+				if(flag)
+					return;
+				used[i]=false;
+				if(len==a[i])				ºÙ÷¶
+					return;
+			}
+
+		}
+	}
+}
+int main()
+{
+	int i,sum,T,max;
+	scanf(%d,&T);
+	while(T--)
+	{
+		scanf(%d,&n);
+		b=0;
+		max=0;
+		for(i=0;in;i++)
+		{
+			scanf(%d,a+i);
+			b+=a[i];
+			max=maxa[i]maxa[i];
+		}
+		sort(a,a+n,cmp);
+		flag=false;
+		if(b%4)
+		{
+			printf(non);
+			continue;
+		}
+		b=4;
+		if(maxb)
+		{
+			printf(non);
+			continue;
+		}
+		memset(used,0,sizeof(used));
+		dfs(0,b,4);
+		if(flag)
+			printf(yesn);
+		else
+			printf(non);
+	}
+	return 0;
+}

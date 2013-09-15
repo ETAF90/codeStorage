@@ -1,0 +1,77 @@
+
+/*
+这题以前做过，但交了N次，一直过不了，后来就放弃了，今天进AC大牛的空间，偶然看到此题，在这里YM下AC大牛，表示他的解题看不懂。然后就再去想想题目。
+
+题目的意思：给你N个圆，和一条射线，问射线是否与圆相交，相切不算，求交点与射线起点最短距离。如果最短距离大于射程或者没有圆与射线相交就输出"No"。否则输出min*k
+
+我的做法：
+
+设圆心D到射线起点A的向量AD，箭的射出的方向的向量为d
+
+1.dot（AD，d）来判断AD，d的夹角是否<90 >=90就肯定不想交
+
+2.cross(AD,d)=|AD||d|sin(a); 用叉乘来求圆心到射线的距离tmp   如果tmp>=r（没相交或者相切）
+
+3.sqrt(|AD|*|AD|-tmp*tmp)-sqrt(r*r-tmp*tmp) 就是圆到起点A的最短距离
+
+注意点就是叉乘出来可能为负，会导致tmp<0，我因为这个WA到死，加个fabs就过了
+
+好题，再次表示YM
+
+*/
+#include<iostream>
+#include<cmath>
+#define EPS (1e-9)
+using namespace std;
+struct point
+{
+	double x,y;
+};
+double cross(const struct point &a,const struct point& b)
+{
+	return a.x*b.y-a.y*b.x;
+}
+double distance(const struct point &a)
+{
+	return sqrt(a.x*a.x+a.y*a.y);
+}
+int main()
+{
+	struct point begin,dir,hero,ad;
+	double d,k,r,tmp,ans,dad,ddir;
+	int n,i;
+	char name[20];
+	bool flag;
+	while(scanf("%lf%lf%lf%lf",&begin.x,&begin.y,&dir.x,&dir.y)!=EOF)
+	{
+		flag=false;
+		scanf("%lf%lf%d",&d,&k,&n);
+		for(i=0;i<n;i++)
+		{
+		
+			scanf("%s%lf%lf%lf",name,&hero.x,&hero.y,&r);
+			ad.x=hero.x-begin.x;ad.y=hero.y-begin.y;
+			if(ad.x*dir.x+ad.y*dir.y<=0)
+				continue;
+			dad=distance(ad);ddir=distance(dir);
+			if(dad<=r)
+			{
+				printf("%s 0.00\n",name);
+				flag=true;
+				continue;
+			}
+			tmp=fabs(cross(ad,dir))/ddir;
+			if(tmp>=r)
+				continue;
+			ans=sqrt(dad*dad-tmp*tmp)-sqrt(r*r-tmp*tmp);
+			if(ans>=d)
+				continue;
+			printf("%s %.2lf\n",name,ans*k);
+			flag=true;
+			
+		}		
+		if(!flag)
+			printf("No\n");
+	}
+	return 0;
+}

@@ -1,0 +1,48 @@
+/*
+*	406699 2011-07-30 22:41:52 Accepted 1011 Visual C++  125 ms 6056KB 775B kite 
+*/
+
+#include<iostream>
+#include<map>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<cstdlib>
+#include<vector>
+#include<queue>
+#include<set>
+#include<stack>
+#include<bitset>
+#include<functional>
+using namespace std;
+const int N=1000002;
+char s[N];
+int next[N];
+void getnext(char* s,int *next)
+{
+	int len=strlen(s);
+	next[0]=0;
+	int k=0;				//k为最大前缀长度
+	for(int i=1;i<len;++i)
+	{
+		while(k>0 && s[k]!=s[i])k=next[k-1];
+		if(s[k]==s[i])++k;
+		next[i]=k;			
+	}
+}
+int main()
+{
+	char str[1000002];
+	while(scanf("%s",str)!=EOF)
+	{
+		int n=strlen(str);
+		if(n==1 && str[0]=='.')break;
+		getnext(str,next);
+		int t=n-next[n-1];
+		printf("%d\n",n%t?1:n/t);
+	}
+	
+	return 0;
+}

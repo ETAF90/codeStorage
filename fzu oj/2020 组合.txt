@@ -1,0 +1,37 @@
+#include<stdio.h>
+void ext_gcd(int a,int b,int &x,int &y)
+{
+	if(!b)
+	{
+		x=1;
+		y=0;
+		return;
+	}
+	ext_gcd(b,a%b,x,y);
+	int t=x;
+	x=y;
+	y=t-a/b*y;
+}
+int main()
+{
+	int T,n,m,p,i,x,y;
+	__int64 ans;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d%d%d",&n,&m,&p);
+		ans=1;
+		for(i=n;i>n-m;--i)
+			ans=ans*i%p;
+		for(i=2;i<=m;++i)
+		{
+			ext_gcd(i,p,x,y);	//求逆元   因为p是素数，故 (i,n)=1;  (i,n)|1 ; 故 i*x=1 mod(p) 必然有解，逆元存在。
+			while(x<0)			// x的通解为X=x+k*n/(i,n);  k: 0-->(i,n)-1       ;因为p是素数故(a,p)=1,有且只有一个解
+				x+=p;			//注意，x 可能是负数，故解应该是x%p，而这里用计算机语言表示为x+p，如x=-3，p=10;x%p=7=-3+10;
+								//注意，解还是唯一的。
+			ans=ans*x%p;
+		}
+		printf("%I64d\n",ans);
+	}
+	return 0;
+}

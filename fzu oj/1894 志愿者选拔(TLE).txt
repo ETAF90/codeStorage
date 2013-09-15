@@ -1,0 +1,50 @@
+#include<iostream>
+#include<string>
+#include<deque>
+using namespace std;
+struct node
+{
+	int pos,value;
+
+}a[1000006];
+int main()
+{
+	int t,i,v;
+	char oper[6];
+	scanf("%d",&t);
+	while(t--)
+	{
+		scanf("%s",oper);
+		int front=0;
+		int rear=0;
+		deque<node> Q;
+		while(scanf("%s",oper) && oper[0]!='E')
+		{
+			if(oper[0]=='C')
+			{
+				scanf("%s%d",oper,&a[rear].value);
+				a[rear].pos=rear;
+				rear++;
+			//¶ÓÁÐÎ¬»¤
+				while(Q.size()>0 &&a[rear-1].value>Q.back().value )
+					Q.pop_back();
+				Q.push_back(a[rear-1]);
+			}
+			if(oper[0]=='G')
+				front++;
+			if(oper[0]=='Q')
+			{
+				while(Q.size()>0 && Q.front().pos<front)
+					Q.pop_front();
+				if(Q.empty())
+					printf("-1\n");
+				else
+					printf("%d\n",Q.front().value);
+
+			}
+
+		}
+
+	}
+	return 0;
+}

@@ -1,0 +1,107 @@
+/*	4511040	2011-08-29 16:09:28	Accepted	3874	2000MS	23940K	1727 B	C++	kite
+*/
+#include<iostream>
+#include<cstdio>
+#include<map>
+#include<algorithm>
+using namespace std;
+typedef __int64 LL;
+const int N=1000010;
+int head[N],next[N],data[N],tt[N];
+LL C[N],ans[200010];
+typedef struct node
+{
+	int id,first,second;
+	bool operator<(const node &z)const
+	{
+		if(first==z.first)
+			return second<z.second;
+		return first<z.first;
+	}
+}node;
+node seg[200010];
+//-----------------------------------
+int lowbit(int x)
+{return x&(-x);}
+void Modify(int n,int i,int detax)
+{
+	while(i<=n)
+	{
+		C[i]+=detax;
+		i+=lowbit(i);
+	}
+
+}
+LL Sum(int n,int i)
+{
+	LL sum=0;
+	while(i>0)
+	{
+		sum+=C[i];
+		i-=lowbit(i);
+	}
+	return sum;
+}
+//-----------------------------------
+int main()
+{
+	freopen("in.txt","r",stdin);
+	int T,i,j,n,m,p;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d",&n);
+		for(i=1;i<=n;++i)
+			scanf("%d",data+i);
+		memset(head,0,sizeof(head));
+		memset(next,0,sizeof(next));
+		memset(C,0,sizeof(C));
+		for(i=1;i<=n;++i)
+		{
+			if(!head[data[i]])
+			{
+				head[data[i]]=i;
+				Modify(n,i,data[i]);
+			}
+			else
+				next[tt[data[i]]]=i;
+			tt[data[i]]=i;
+		}
+		//for(i=1;i<=n;++i)
+		//	printf("%d ",next[i]);
+		//printf("\n");
+		scanf("%d",&m);
+		for(i=0;i<m;++i)
+		{
+			scanf("%d%d",&seg[i].first,&seg[i].second);
+			seg[i].id=i;
+			
+		}
+		sort(seg,seg+m);
+		for(i=0,j=1;i<m;++i)
+		{
+			for(;j<seg[i].first;++j)
+			{
+				if(head[data[j]]==j)
+				{
+					 p=j;
+					while(p && p<seg[i].first)
+					{
+						p=next[p];
+					}
+					if(p)
+					{
+						Modify(n,p,data[j]);
+						head[data[j]]=p;
+					}
+					Modify(n,j,-data[j]);
+				}
+			}
+			ans[seg[i].id]=Sum(n,seg[i].second);
+		}
+		for(i=0;i<m;++i)
+			printf("%I64d\n",ans[i]);
+	
+	}
+	return 0;
+}

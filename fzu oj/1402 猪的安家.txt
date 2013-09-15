@@ -1,0 +1,45 @@
+#include<stdio.h>					//中国剩余定理模板
+typedef __int64 ll;
+ll ext_gcd(ll a,ll b,ll &x,ll &y)
+{
+	ll t,d;
+	if(b==0)
+	{
+		x=1;y=0;
+		return a;
+	}
+	d=ext_gcd(b,a%b,x,y);
+	t=x;
+	x=y;
+	y=t-a/b*y;
+	return d;
+}
+ll China(int b[],int w[],int k)
+{
+	int i;
+	ll d,x,y,a=0,m;
+	ll n=1;
+	for(i=0;i<k;i++)
+		n*=w[i];
+	for(i=0;i<k;i++)
+	{
+		m=n/w[i];
+		d=ext_gcd(w[i],m,x,y);
+		a=(a+y*m*b[i])%n;
+	}
+	if(a>0)
+		return a;
+	else
+		return a+n;
+}
+int main()
+{
+	int n,w[11],b[11];
+	while(scanf("%d",&n)!=EOF)
+	{
+		for(int i=0;i<n;i++)
+			scanf("%d%d",w+i,b+i);
+		printf("%I64d\n",China(b,w,n));
+	}
+	return 0;
+}

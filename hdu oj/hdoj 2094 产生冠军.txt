@@ -1,0 +1,64 @@
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+class node
+{
+public:
+	string s;
+	node* pre;
+};
+int main()
+{
+	int t,i;
+	node x,y;
+	while(cin>>t && t!=0)
+	{
+		vector<node> a;
+		while(t--)
+		{
+			cin>>x.s>>y.s;
+			x.pre=0;
+			int flag1=false,flag2=false;
+			int pos1=-1,pos2=-1;
+			for(i=0;i<a.size();i++)
+			{
+				if(a[i].s==x.s)
+				{
+					pos1=i;
+					break;
+				}
+			}
+			for(i=0;i<a.size();i++)
+			{
+				if(a[i].s==y.s)
+				{
+					pos2=i;
+					break;
+				}
+			}
+			if(pos1==-1)
+			{
+				a.push_back(x);
+				pos1=a.size()-1;
+			}
+			if(pos2==-1)
+			{
+				a.push_back(y);
+				pos2=a.size()-1;
+			}
+			a[pos2].pre=&a[pos1];
+		}
+		int cnt=0;
+		for(i=0;i<a.size();i++)
+		{
+			if(a[i].pre==0)
+				cnt++;
+		}
+		if(cnt==1)
+			cout<<"Yes\n";
+		else
+			cout<<"No\n";
+	}
+	return 0;
+}

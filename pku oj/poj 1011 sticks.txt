@@ -1,0 +1,75 @@
+#include<iostream>
+#include<algorithm>
+using namespace std;
+int a[64],n,b;
+bool used[64],flag;
+bool cmp(int x,int y)
+{
+	return x>y;
+}
+void dfs(int k,int len,int cnt)
+{
+	int i;
+	if(cnt==1)
+	{
+		flag=true;
+		return;
+	}
+	if(len==0)
+	{
+		for(i=0;i<n && used[i];i++);
+		used[i]=true;
+		dfs(i+1,b-a[i],cnt-1);
+		if(flag)
+			return;
+		used[i]=false;
+	}
+	else
+	{
+		for(int pre=0,i=k;i<n;i++)
+		{
+			if(!used[i] && a[i]!=pre && a[i]<=len)		// pre ¼ôÖ¦
+			{
+				pre=a[i];
+				used[i]=true;
+				dfs(i+1,len-a[i],cnt);
+				if(flag)
+					return;
+				used[i]=false;
+				if(len==a[i])				//¼ôÖ¦
+					return;
+			}
+
+		}
+	}
+}
+int main()
+{
+	int i,sum;
+	while(scanf("%d",&n) && n)
+	{
+		sum=0;
+		for(i=0;i<n;i++)
+		{
+			scanf("%d",a+i);
+			sum+=a[i];
+		}
+		sort(a,a+n,cmp);
+		flag=false;
+		for(b=a[0];b<=(sum>>1);b++)
+		{
+			if(sum%b)
+				continue;
+			memset(used,0,sizeof(used));
+			dfs(0,b,sum/b);
+			if(flag)
+				break;
+		}
+		if(flag)
+			printf("%d\n",b);
+		else
+			printf("%d\n",sum);
+
+	}
+	return 0;
+}

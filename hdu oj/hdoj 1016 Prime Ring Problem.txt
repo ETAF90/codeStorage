@@ -1,0 +1,59 @@
+#include<iostream>				//ºÚµ•…ÓÀ—
+using namespace std;
+bool flag[21];
+int n,a[21];
+bool prime[43];
+void dfs(int k)
+{
+	int i;
+	if(k==n)
+	{
+		printf("%d",a[1]);
+		for(i=2;i<=n;i++)
+			printf(" %d",a[i]);
+		printf("\n");
+		/*printf("%d",a[1]);
+		for(i=n;i>=2;i--)
+			printf(" %d",a[i]);
+		printf("\n");
+		*/
+		return ;
+	}
+	for(i=2;i<=n;i++)
+	{
+		if(!flag[i] && !prime[i+a[k]])
+		{
+			if(k<n-1 || (k==n-1 && !prime[i+1]))
+			{
+				a[k+1]=i;
+				flag[i]=true;
+				dfs(k+1);
+				flag[i]=false;
+			}
+
+		}
+	}
+}
+int main()
+{
+	int cases=1,i,j;
+	memset(prime,0,sizeof(prime));
+	for(i=2;i<7;i++)
+		for(j=i;j*i<=42;j++)
+			prime[i*j]=1;
+	/*for(i=2;i<=42;i++)
+		if(!prime[i])
+			printf("%d ",i);
+	printf("\n");
+	*/
+	while(scanf("%d",&n)!=EOF)
+	{
+		printf("Case %d:\n",cases++);
+		memset(flag,0,sizeof(flag));
+		flag[1]=1;
+		a[1]=1;
+		dfs(1);
+		printf("\n");
+	}
+	return 0;
+}

@@ -1,0 +1,113 @@
+Source Code
+RunID: 412699
+UserID: kite
+Submit time: 2011-08-31 23:54:13
+Language: C++
+Length: 2207 Bytes.
+Result: Accepted
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+#include<vector>
+using namespace std;
+const int N=10010;
+int dx[]={1,0,-1,0};
+int dy[]={0,1,0,-1};
+int g[110][110],vis[N],mat[N],color[N];
+vector<int> p[N];
+void dfs(int u,int col)
+{
+    color[u]=col;
+    for(int i=0;i<p[u].size();++i)
+    {
+        if(!color[p[u][i]])
+            dfs(p[u][i],-col);
+    }
+}
+int match(int u)
+{
+    int i,v,t;
+    for(i=0;i<p[u].size();++i)
+    {
+        v=p[u][i];
+        if(!vis[v])
+        {
+            vis[v]=1;t=mat[v];mat[v]=u;
+            if(t==-1 || match(t))return 1;
+            mat[v]=t;
+
+        }
+    }
+    return 0;
+}
+
+int main()
+{
+
+    int T,n,m,i,j,ans,cnt,x,y,k;
+    scanf("%d",&T);
+    while(T--)
+    {
+        scanf("%d%d",&m,&n);
+        cnt=0;
+		memset(g,0,sizeof(g));
+        for(i=1;i<=m;++i)
+        {
+            for(j=1;j<=n;++j)
+            {
+                scanf("%d",&g[i][j]);
+                if(g[i][j])
+                    g[i][j]=++cnt;
+            }
+        }
+        for(i=1;i<=cnt;++i)
+            p[i].clear();
+        for(i=1;i<=m;++i)
+        {
+            for(j=1;j<=n;++j)
+            {
+                if(g[i][j])
+                {
+                    for(k=0;k<4;++k)
+                    {
+                        x=i+dx[k];y=j+dy[k];
+                        if(g[x][y])
+                            p[g[i][j]].push_back(g[x][y]);
+                    }
+
+                }
+            }
+        }
+      /*  for(i=1;i<=cnt;++i)
+        {
+            printf("%d :",i);
+            for(j=0;j<p[i].size();++j)
+                printf("%d ",p[i][j]);
+            printf("\n");
+        }
+       */
+        memset(color,0,sizeof(color));
+        for(i=1;i<=cnt;++i)
+        {
+            if(!color[i])
+                dfs(i,-1);
+        }
+        ans=0;
+        memset(mat,-1,sizeof(mat));
+        for(i=1;i<=cnt;++i)
+        {
+            if(color[i]==1)
+            {
+                memset(vis,0,sizeof(vis));
+                ans+=match(i);
+            }
+        }
+		ans+=ans;
+        printf("%d\n",ans);
+    }
+    return 0;
+}
+

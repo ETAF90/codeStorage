@@ -1,0 +1,162 @@
+/*
+*	4809120	2011-10-23 16:58:13	Accepted	3046	328MS	4860K	2994 B	C++	kite
+*	解：格子与格子之间连边，容量为1；源点到x=2的点容量为inf，x=1的点到汇点容量为inf，利用最大流求最小割。
+*/
+
+#include<iostream>
+#include<cstring>
+#include<vector>
+#include<cstdio>
+using namespace std;
+
+#define N 40010
+#define inf 0x3fffffff
+struct node {
+	int t;
+	int flow;
+	int cap;
+	int index;
+};
+vector<node> g[N];
+vector<int> e[N];
+int rank[N];
+void init(int n) {
+	memset(rank, -1, sizeof (rank));
+	int i;
+	for (i = 0; i < n; ++i) {
+		g[i].clear();
+		e[i].clear();
+	}
+}
+void addedge(int a, int b, int c) {
+	node temp;
+	temp.t = b;
+	temp.cap = c;
+	temp.flow = 0;
+	temp.index = g[b].size();
+	g[a].push_back(temp);
+
+		temp.t = a;
+	temp.cap = 0;
+	temp.index = g[a].size() - 1;
+	g[b].push_back(temp);
+}
+void addedge1(int a, int b, int c) {
+	node temp;
+	temp.t = b;
+	temp.cap = c;
+	temp.flow = 0;
+	temp.index = g[b].size();
+	g[a].push_back(temp);
+	temp.t = a;
+	temp.index = g[a].size() - 1;
+	g[b].push_back(temp);
+}
+int bfs(int s, int t, int n) {
+	memset(rank, -1, sizeof (rank));
+	int i;
+	for (i = 0; i < n; ++i)
+		e[i].clear();
+	int que[N];
+	int u, v;
+	int front = 0, rear = 0;
+	rank[s] = 0;
+	rear++;
+	que[front] = s;
+	for (; rear > front;) {
+		u = que[front++];
+		for (i = 0; i < g[u].size(); ++i) {
+			v = g[u][i].t;
+			if (rank[v] == -1 && g[u][i].cap) {
+				que[rear++] = v;
+				rank[v] = rank[u] + 1;
+			}
+			if (rank[v] == rank[u] + 1)
+				e[u].push_back(i);
+		}
+	}
+	return (rank[t] != -1);
+}
+int dinic(int s, int t, int n) {
+	int st[N], maxflow = 0;
+	int aux[N];
+	int top, cur;
+	int p, i, k;
+	while (1) {
+		if (bfs(s, t, n) == 0) break;
+		top = 0;
+		st[top] = s;
+		cur = s;
+		while (1) {
+			if (cur == t) {
+				int minc = 0x3fffffff;
+				for (i = 0; i < top; ++i) {
+					p = aux[i + 1];
+					if (minc > g[st[i]][p].cap)
+						minc = g[st[i]][p].cap, k = i;
+				}
+				for (i = 0; i < top; ++i) {
+					p = aux[i + 1];
+					g[st[i]][p].cap -= minc;
+					g[g[st[i]][p].t][g[st[i]][p].index].cap += minc;
+				}
+				maxflow += minc;
+				cur = st[top = k];
+				// continue;
+			}
+			int len = e[cur].size();
+			while (len) {
+				p = e[cur][len - 1];
+				if (g[cur][p].cap && rank[g[cur][p].t] == rank[cur] + 1)
+					break;
+				else {
+					len--;
+					e[cur].pop_back();
+				}
+			}
+			if (len) {
+				cur = st[++top] = g[cur][p].t;
+				aux[top] = p;
+			} else {
+				if (top == 0) break;
+				rank[cur] = -1;
+				cur = st[--top];
+			}
+		}
+	}
+	return maxflow;
+}
+int gg[210][210];
+int dx[]={1,0,-1,0},
+	dy[]={0,-1,0,1};
+int main(){
+	freopen("in.txt","r",stdin);
+	int row,col,i,j,k,cases=1,x,i1,j1,n;
+	while(scanf("%d%d",&row,&col)!=EOF){
+
+		int s=row*col,t=row*col+1;
+		n=row*col+2;
+		init(n);
+		for(i=0;i<row;++i)
+			for(j=0;j<col;++j)
+			{
+				scanf("%d",&x);
+				if(x==2)
+					addedge(s,col*i+j,inf);
+				if(x==1)
+					addedge(col*i+j,t,inf);
+				for(k=0;k<4;++k){
+					
+					i1=i+dx[k];
+					j1=j+dy[k];
+					if(i1>=0 && j1>=0 && i1<row && j1<col)
+					{
+						addedge(col*i+j,col*i1+j1,1);
+					}
+				}
+
+			}
+		printf("Case %d:\n%d\n",cases++, dinic(s, t,  n));
+	}
+	return 0;
+}

@@ -1,0 +1,37 @@
+/*
+*		map±©Á¦ £º9032411 030902414 2418 Accepted 400K 1500MS C++ 569B 2011-07-29 20:54:34 
+*/
+
+#include<iostream>
+#include<map>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<string>
+#include<cstdlib>
+#include<vector>
+#include<queue>
+#include<set>
+#include<stack>
+#include<bitset>
+#include<functional>
+using namespace std;
+int main()
+{
+	map<string,int> M;
+	map<string,int>::iterator it;
+	char str[100];
+	int sum=0;
+	while(gets(str))
+	{
+		sum++;
+		M[str]++;
+	}
+	for(it=M.begin();it!=M.end();++it)
+	{
+		cout<<it->first;
+		printf(" %.4lf\n",100.0*double(it->second)/double(sum));
+	}
+	return 0;
+}

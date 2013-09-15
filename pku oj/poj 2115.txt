@@ -1,0 +1,42 @@
+	//	cx=(b-a)mod 2^k;
+	#include<stdio.h>
+	typedef __int64 ll;
+	ll extgcd(ll a,ll b,ll &x,ll &y)
+	{
+		ll t,d;
+		if(b==0)
+		{
+			x=1;y=0;
+			return a;
+		}
+		d=extgcd(b,a%b,x,y);
+		t=x;
+		x=y;
+		y=t-a/b*y;
+		return d;
+	}
+	int main()
+	{
+		ll a,b,c,k,x,y,A,B,n;
+		while(scanf("%I64d%I64d%I64d%I64d",&a,&b,&c,&k))
+		{
+			if(a==0 && b==0 && c==0 && k==0)
+				break;
+			A=c;
+			n=(ll)1<<k;
+			x=0;y=0;
+			ll tmp=extgcd(A,n,x,y);
+			B=b-a;
+			if(B%tmp)
+			{
+				printf("FOREVER\n");
+				continue;
+			}
+		//	printf("%I64d %I64d %I64d %I64d\n",x,y,tmp,B);
+			x=B/tmp*x;
+			tmp=n/tmp;
+			x=(x%tmp+tmp)%tmp;//此处是关键，要求的是最小正整数解！
+			printf("%I64d\n",x);
+		}
+		return 0;
+	}

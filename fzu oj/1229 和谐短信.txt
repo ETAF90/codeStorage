@@ -1,0 +1,35 @@
+#include<iostream>
+using namespace std;
+#define N 600004
+int a[N],v[N],que[N];//que为队列。a[i]的意义：i投给a[i].   v[i]的定义：编号为i的人得到的短信数。
+int main()
+{
+	int i,j,n,ans;
+	int front,rear;
+	while(scanf("%d",&n)!=EOF)
+	{
+		front=rear=0;
+		memset(v,0,sizeof(v));
+		for(i=0;i<n;i++)
+		{
+			scanf("%d",a+i);
+			v[a[i]]++;
+		}
+		for(i=0;i<n;i++)
+			if(!v[i])				//若v[i]==0则i为孤独者，入队。 
+				que[rear++]=i;
+		while(front!=rear)			
+		{
+			v[a[que[front]]]--;
+			if(!v[a[que[front]]])
+				que[rear++]=a[que[front]];
+			front++;
+		}
+		ans=0;
+		for(i=0;i<n;i++)
+			if(v[i])
+				ans++;
+		printf("%d\n",ans);	
+	}
+	return 0;
+}

@@ -1,0 +1,159 @@
+/*
+ *	9492816	030902414	2125	Accepted	2696K	407MS	G++	2928B	2011-10-28 16:33:51
+ *	求最小点权覆盖集。
+ *  求最小割的时候要dfs求s集，而不能直接找满流边，因为满流边不一定是最小割。
+*/
+
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<vector>
+using namespace std;
+#define MAXN 510
+#define inf 0x3fffffff
+int g[MAXN][MAXN],flow[MAXN][MAXN];
+typedef struct node{
+
+	int x;
+	char c;
+	node(){}
+	node(int x1,const char& c1):x(x1),c(c1){}
+}node;
+
+vector<node> ans;
+int max_flow(int n, int graph[][MAXN], int s, int t) {
+	int cap[MAXN], pre[MAXN], q[MAXN], vis[MAXN];
+	bool mark[MAXN];
+	int i, u, v, top, bot, flow = 0, visn = n;
+	for(;;) {
+		memset(mark, 0, sizeof(bool) * n);
+		cap[s] = inf, mark[s] = true, cap[t] = 0;
+		for(q[bot = top = 0] = s;bot <= top;) {
+			for(u = q[bot++], v = 0;v < n;++ v)
+				if(v != u && !mark[v] && graph[u][v] > 0) {
+					q[++top] = v, pre[v] = u, mark[v] = true;
+					cap[v] = min(cap[u], graph[u][v]);
+					if(v == t) break;
+				}
+				if(v == t) break;
+		}
+		if(cap[t] == 0) return flow;
+		for(flow += cap[t], i = t;i != s;i = pre[i])
+			graph[i][pre[i]] += cap[t], graph[pre[i]][i] -= cap[t];
+	}
+	return flow;
+}
+/*
+int max_flow(int n,int mat[][MAXN],int source,int sink,int flow[][MAXN]){
+int pre[MAXN],que[MAXN],d[MAXN],p,q,t,i,j;
+if (source==sink) return inf;
+for (i=0;i<n;i++)
+for (j=0;j<n;flow[i][j++]=0);
+for (;;){
+for (i=0;i<n;pre[i++]=0);
+pre[t=source]=source+1,d[t]=inf;
+for (p=q=0;p<=q&&!pre[sink];t=que[p++])
+for (i=0;i<n;i++)
+if (!pre[i]&&(j=mat[t][i]-flow[t][i]))
+pre[que[q++]=i]=t+1,d[i]=d[t]<j?d[t]:j;
+else if (!pre[i]&&(j=flow[i][t]))
+pre[que[q++]=i]=-t-1,d[i]=d[t]<j?d[t]:j;
+if (!pre[sink]) break;
+for (i=sink;i!=source;)
+if (pre[i]>0)
+flow[pre[i]-1][i]+=d[sink],i=pre[i]-1;
+else
+flow[i][-pre[i]-1]-=d[sink],i=-pre[i]-1;
+}
+for (j=i=0;i<n;j+=flow[source][i++]);
+return j;
+}
+
+*/
+
+bool mark[MAXN];
+void dfs(int u,int n){
+
+	int v;
+	for(v=0;v<n;++v)
+		if(g[u][v] && !mark[v])
+		{
+			
+			mark[v]=1;
+			dfs(v,n);
+		
+		}
+
+}
+void output(int n){
+	
+	for(int i=0;i<n;++i)
+	{
+		for(int j=0;j<n;++j)
+			printf("%d ",g[i][j] );
+		printf("\n");
+	}
+}
+int main(){
+
+	freopen("in.txt","r",stdin);
+	int i,j,s,t,n,m,x,y;
+	while(scanf("%d%d",&n,&m)!=EOF){
+
+		s=n+n;
+		t=s+1;
+		memset(g,0,sizeof(g));
+		memset(flow,0,sizeof(flow));
+		for(i=n;i<n+n;++i){
+
+			scanf("%d",&x);
+			g[i][t]=x;
+		}
+		for(i=0;i<n;++i){
+
+			scanf("%d",&x);
+			g[s][i]=x;
+
+		}
+		while(m--){
+
+			scanf("%d%d",&x,&y);
+			--x;--y;
+			if(x>=n){
+
+				x-=n;
+				//g[s][x]=g[x][t];
+			}
+			if(y<n){
+
+				y+=n;	
+				//g[y][t]=g[s][y];
+			}
+
+			g[x][y]=inf;
+
+		}
+		ans.clear();
+		//output(n+n+2);
+		printf("%d\n",max_flow(n+n+2,g,  s,  t) );
+		//output(n+n+2);
+		memset(mark,0,sizeof(mark));
+		mark[s]=1;
+		dfs(s,n+n+2);
+	
+
+		for(i=0;i<n;++i)
+			if(!mark[i])
+				ans.push_back(node(i+1,'-'));
+		for(i=n;i<n+n;++i)
+			if(mark[i] && !g[i][t])
+				ans.push_back(node(i-n+1,'+'));
+
+		printf("%d\n",ans.size());
+		for(i=0;i<ans.size();++i)
+			printf("%d %c\n",ans[i].x,ans[i].c);
+
+	}
+	return 0;
+}

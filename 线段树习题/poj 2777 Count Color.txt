@@ -1,0 +1,99 @@
+#include<iostream>
+using namespace std;
+int ans;	  //记录不同颜色数
+bool flag[33];//颜色是否已出现过
+struct node
+{
+	int l,r,color;
+}a[300002];
+void build(int i,int left,int right)//建树
+{
+	a[i].color=1;  //初始每个区间的颜色都为1
+	a[i].l=left;   
+	a[i].r=right;
+	if(left==right)
+		return ;
+	int mid=(left+right)>>1;
+	build((i<<1),left,mid);
+	build((i<<1)+1,mid+1,right);
+}
+void paint(int i,int left,int right,int color) //给区间上色
+{
+	if(left==a[i].l && a[i].r==right)         //找到要上色区间则上色，返回。
+	{a[i].color=color;return;}				 
+	if(a[i].color!=color && a[i].color)		 //还没找到，若现在所在的这个区间是单色的，且和要上色的颜色不一样，
+											//则令它的两个子区间和该区间的颜色值一样。若不执行此操作，wa，不解。
+							
+											
+	{
+		a[(i<<1)].color=a[(i<<1)+1].color=a[i].color;
+		a[i].color=0;
+	}
+	if(color==a[i].color)			//无论区间在哪个范围，只要当前所在区间是单色，且颜色和所要涂的颜色相同，则已涂好，返回。
+		return;
+	int mid=(a[i].l+a[i].r)>>1;
+	if(right<=mid)
+		paint((i<<1),left,right,color);
+	else
+		if(left>mid)
+			paint((i<<1)+1,left,right,color);
+		else
+		{
+			paint((i<<1),left,mid,color);
+			paint((i<<1)+1,mid+1,right,color);
+		}
+}
+void find(int i,int left,int right)     //[left,right]区间内 查找不同颜色。
+{
+	if(a[i].color)                       //如果当前区间是单色的则判断该颜色是否出现过，若未出现过则计数加1，返回，不再往下。  
+	{
+		if(!flag[a[i].color])
+		{	ans++;flag[a[i].color]=true;	}
+			return;
+	}
+		int mid=(a[i].l+a[i].r)>>1;
+	if(right<=mid)
+		find((i<<1),left,right);
+	else
+		if(left>mid)
+			find((i<<1)+1,left,right);
+		else
+		{
+			find((i<<1),left,mid);
+			find((i<<1)+1,mid+1,right);
+		}
+	
+
+}
+int main()
+{
+	int n,t,o,p,q,c;
+	char x;
+	scanf("%d%d%d",&n,&t,&o);
+	getchar();
+	build(1,1,n);
+	while(o--)
+	{
+		x=getchar();
+		if(x=='C')
+		{
+			scanf("%d%d%d",&p,&q,&c);
+			if(p>q)
+			{int tmp=p;p=q;q=tmp;}
+			paint(1,p,q,c);
+		}
+		if(x=='P')
+		{
+			scanf("%d%d",&p,&q);
+			if(p>q)
+			{int tmp=p;p=q;q=tmp;}
+			ans=0;
+			memset(flag,0,sizeof(flag));
+			find(1,p,q);
+			printf("%d\n",ans);
+		}
+		getchar();
+	}
+
+	return 0;
+}

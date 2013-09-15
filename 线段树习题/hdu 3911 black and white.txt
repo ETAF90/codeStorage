@@ -1,0 +1,144 @@
+/*
+ *	4796061	2011-10-21 16:24:37	Accepted	3911	1109MS	9916K	2367 B	G++	kite
+ *	
+ */
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<cmath>
+using namespace std;
+#define L(i) (i<<1)
+#define R(i) (i<<1 | 1)
+inline int Mid(int x,int y){
+	return (x+y) >> 1;
+}
+const int N=100010;
+typedef struct seg{
+	
+	int l,r,lv0,lv1,rv1,rv0,max0,max1;
+	bool lazy;
+}seg;
+seg ans;
+seg a[N+N+N];
+
+int data[N];
+
+void process(int i){
+	
+	swap(a[i].lv0,a[i].lv1);
+	swap(a[i].rv0,a[i].rv1);
+	swap(a[i].max0,a[i].max1);
+
+}
+void Pushdown(int i){
+	
+	if(a[i].l==a[i].r || a[i].lazy==0)return;
+
+	a[L(i)].lazy^=1;
+	process(L(i));
+	a[R(i)].lazy^=1;
+	process(R(i));
+	a[i].lazy=0;
+
+}
+void Upby(seg& p,seg& lc,seg& rc){
+	
+	p.lv0=lc.lv0+(lc.max0==lc.r-lc.l+1?rc.lv0:0);
+	p.rv0=rc.rv0+(rc.max0==rc.r-rc.l+1?lc.rv0:0);
+	p.max0=max(max(lc.max0,rc.max0),lc.rv0+rc.lv0);
+	p.lv1=lc.lv1+(lc.max1==lc.r-lc.l+1?rc.lv1:0);
+	p.rv1=rc.rv1+(rc.max1==rc.r-rc.l+1?lc.rv1:0);
+	p.max1=max(max(lc.max1,rc.max1),lc.rv1+rc.lv1);
+}
+void build(int i,int l,int r){
+		
+	a[i].l=l;
+	a[i].r=r;
+	a[i].lazy=0;
+	if(l==r){
+		
+		a[i].lv0=a[i].rv0=a[i].max0=1-data[l];
+		a[i].lv1=a[i].rv1=a[i].max1=data[l];
+		return ;
+	}
+	int mid=Mid(l,r);
+	build(L(i),l,mid);
+	build(R(i),mid+1,r);
+	Upby(a[i],a[L(i)],a[R(i)]);
+}
+void Update(int i,int l,int r){
+	
+	Pushdown(i);
+	if(a[i].l==l && a[i].r==r){
+		
+		process(i);
+		a[i].lazy=1;
+		return;
+	}
+	int mid=Mid(a[i].l,a[i].r);
+	if(r<=mid)
+		Update(L(i),l,r);
+	else if(l>mid)
+		Update(R(i),l,r);
+	else{
+		
+		Update(L(i),l,mid);
+		Update(R(i),mid+1,r);
+	}
+	Upby(a[i],a[L(i)],a[R(i)]);
+}
+
+seg& Query(int i,int l,int r ){
+	
+	Pushdown(i);
+	if(a[i].l==l && a[i].r==r){
+		
+		return a[i];
+	}
+	int mid=Mid(a[i].l,a[i].r);
+
+	if(r<=mid){
+		return Query(L(i),l,r);
+	}
+	else if(l>mid){
+		
+		return Query(R(i),l,r);
+	}
+	else{
+		seg tmp,lc,rc;
+		lc=Query(L(i),l,mid);
+		rc=Query(R(i),mid+1,r);
+		Upby(tmp,lc,rc);
+		return tmp;
+	}
+	//Upby(a[i],a[L(i)],a[R(i)]);
+	
+}
+int main()
+{
+	//freopen("BAW.in","r",stdin);
+	//freopen("out.txt","w",stdout);
+	int n,m,i,op,l,r;
+	while(scanf("%d",&n)!=EOF){
+		
+		for(i=1;i<=n;++i)
+			scanf("%d",data+i);
+		build(1,1,n);
+		scanf("%d",&m);
+		while(m--){
+			
+			scanf("%d%d%d",&op,&l,&r);
+			if(op==1){
+				
+				Update(1,l,r);
+			}
+			else{
+
+				ans=Query(1,l,r);
+				printf("%d\n",ans.max1);
+			}
+		}
+	}
+	return 0;
+}

@@ -1,0 +1,58 @@
+/*
+	简单题，求最大匹配。
+	412540 2011-08-31 10:39:12 1029 Visual C++ 328 ms 256KB 1244B 
+*/
+
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+using namespace std;
+int ans,n,m,e;
+bool vis[110],g[110][110];
+int mat[110];
+bool match(int u){
+	int v;
+	for(v=1;v<=m;++v){
+		if(!vis[v] && g[u][v]){
+			vis[v]=1;
+			if(mat[v]==-1 || match( mat[v] ) ){
+				mat[v]=u;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+void init(){
+	int x,y;
+	memset(g,1,sizeof(g));
+	scanf("%d%d%d",&n,&m,&e);
+	while(e--){
+		scanf("%d%d",&x,&y);
+		g[x][y]=0;
+	}
+}
+void solve(){
+	int i;
+
+	ans=0;
+	memset(mat,-1,sizeof(mat));
+	for(i=1;i<=n;++i){
+	
+			memset(vis,0,sizeof(vis));
+			ans+=match(i);
+		
+	}
+}
+int main()
+{
+	freopen("in.txt","r",stdin);
+	int T,cases=1;
+	scanf("%d",&T);
+	while(T--){
+		init();
+		solve();
+		printf("Case %d: %d\n",cases++,ans);
+	}
+	return 0;
+}

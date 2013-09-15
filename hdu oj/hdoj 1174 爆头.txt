@@ -1,0 +1,47 @@
+#include<iostream>
+#include<cmath>
+using namespace std;
+#define EPS 1e-8
+struct Vector
+{
+	double x,y,z;
+};
+double MO(const struct Vector &v)				//空间向量求模
+{
+	return sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+}
+double cross(const struct Vector &a,const struct  Vector &b)		//空间向量叉乘，叉乘的结果是一个向量，这里返回结果向量的模
+{
+	double i,j,k;
+	i=a.y*b.z-a.z*b.y;
+	j=a.z*b.x-a.x*b.z;
+	k=a.x*b.y-a.y*b.x;
+	return sqrt(i*i+j*j+k*k);
+}
+int main()
+{
+	int T;
+	double h1,r1,x1,y1,z1,h2,r2,x2,y2,z2,x3,y3,z3,tmp;
+	scanf("%d",&T);
+	struct Vector dir,ad;
+	while(T--)
+	{
+		scanf("%lf%lf%lf%lf%lf",&h1,&r1,&x1,&y1,&z1);
+		scanf("%lf%lf%lf%lf%lf%lf%lf%lf",&h2,&r2,&x2,&y2,&z2,&x3,&y3,&z3);
+		z1+=h1;
+		z2+=h2*0.9;
+		ad.x=x1-x2;ad.y=y1-y2;ad.z=z1-z2;		//ad向量为出射点指向匪徒
+		dir.x=x3;dir.y=y3;dir.z=z3;			//dir向量为方向向量
+		if(ad.x*dir.x+ad.y*dir.y+ad.z*dir.z<EPS)	//若两向量夹角大于90度，则一定不会射中。     
+		{
+			printf("NO\n");
+			continue;
+		}
+		tmp=cross(ad,dir)/MO(dir);			//tmp为匪徒圆心到射线的距离。
+		if(tmp>r1)
+			printf("NO\n");
+		else
+			printf("YES\n");
+	}
+	return 0;
+}

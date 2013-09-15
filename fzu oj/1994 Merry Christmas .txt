@@ -1,0 +1,29 @@
+#include<stdio.h>		
+#include<string.h>
+int main()
+{
+	int T,i,cases=1;
+	__int64 ans,f,tmp;
+	char s[10002];
+	scanf("%d",&T);
+	getchar();
+	while(T--)
+	{
+		gets(s);
+		f=tmp=ans=0;
+		for(i=strlen(s)-1;i>=0;i--)
+		{
+			if(s[i]=='4')
+				f++;
+			if(s[i]=='1')
+				tmp+=f;
+			if(s[i]=='3')
+			{
+				ans+=tmp;
+			}
+		}
+		printf("Case %d: %I64d\n",cases++,ans);
+
+	}
+	return 0;
+}

@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include<string.h>
+#define min(a,b) (a<b?a:b)
+int main()
+{
+	int f[101][2];									//f[i][0]表示以第i个字母结尾且当前大写键关的最小次数。
+													//f[i][1]表示以第i个字母结尾且当期大写键开的最小次数。
+	int T,len,i,j;
+	char s[101];
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%s",s);
+		len=strlen(s);
+		f[0][0]=0;
+		f[0][1]=1;
+		for(i=1;i<=len;i++)
+		{
+			if(s[i-1]>='a'&&s[i-1]<='z')			//直观的状态转移方程。
+			{
+				f[i][0]=min(f[i-1][0]+1,f[i-1][1]+2);
+				f[i][1]=min(f[i-1][0]+2,f[i-1][1]+2);
+			}
+			else
+			{
+				f[i][0]=min(f[i-1][0]+2,f[i-1][1]+2);
+				f[i][1]=min(f[i-1][0]+2,f[i-1][1]+1);
+			}
+		}
+		printf("%d\n",f[len][0]);
+	}
+	return 0;
+}

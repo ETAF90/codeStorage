@@ -1,0 +1,47 @@
+#include<iostream>
+#include<cmath>
+using namespace std;
+#define N 1000001
+int pt[N+1],pr[N+1];	//pr[i]代表第i个素数。pt[i]代表i的最小素因子
+int main()
+{
+	int i,j,pn,tmp;
+	memset(pt,0,sizeof(pt));	//筛选素数
+	pn=0;
+	tmp=sqrt((double)N);
+	for(i=2;i<N;i++)
+	{
+		if(!pt[i])
+		{
+			pt[i]=i;pr[pn++]=i;
+			if(i<=tmp)
+				for(j=i;j*i<N;j++)
+				{
+					if(!pt[j*i])
+						pt[i*j]=i;
+				}
+		}
+	}
+	pt[1]=1;
+	int n,ans,t,f;
+	while(scanf("%d",&n)!=EOF)
+	{
+		ans=1;
+		tmp=n;
+		while(n>1)
+		{
+			f=pt[n];
+			t=0;
+			while(!(n%f))
+			{
+				t++;
+				n/=f;
+			}	
+			ans*=t+1;
+		}
+		if(ans>1)
+			ans--;
+		printf("%d %d\n",ans,tmp/pt[tmp]);
+	}
+	return 0;
+}

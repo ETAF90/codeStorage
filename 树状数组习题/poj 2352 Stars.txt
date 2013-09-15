@@ -1,0 +1,51 @@
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<deque>
+#include<cstdlib>
+using namespace std;
+int C[32003];
+int level[15001];
+int n;
+int N=32001;
+int Lowbit(int x)
+{return x&-x;}
+void Modify(int i,int x)
+{
+	while(i<=N)
+	{
+		C[i]+=x;
+		i+=Lowbit(i);
+	}
+}
+int Sum(int i)
+{
+	int sum=0;
+	while(i>0)
+	{
+		sum+=C[i];
+		i-=Lowbit(i);
+	}
+	return sum;
+}
+int main()
+{
+	int i,x;
+	while(scanf("%d",&n)!=EOF)
+	{
+	for(i=1;i<=n;i++)
+	{
+		scanf("%d%*d",&x);
+		x++;
+		Modify(x,1);
+		level[Sum(x)-1]++;
+	}
+		for(i=0;i<n;i++)
+			printf("%d\n",level[i]);
+	
+	}
+
+	return 0;
+}

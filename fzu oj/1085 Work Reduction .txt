@@ -1,0 +1,62 @@
+#include<iostream>
+using namespace std;
+class Case
+{
+public:
+	char name[18];
+	int a;
+	int b;
+	int cost;
+};
+int main()
+{
+	int n,s,d,num,i,j;
+	cin>>n;
+	for(int c=1;c<=n;c++)
+	{
+		
+		cin>>s>>d>>num;
+		Case* all=new Case[num];
+		Case p;
+		for(i=0;i<num;i++)
+		{
+			char x;
+			for(j=0;cin>>x && x!=':';j++)
+				p.name[j]=x;
+			p.name[j]=0;
+			cin>>p.a>>x>>p.b;
+		//	cout<<p.name<<" "<<p.a<<" "<<p.b<<" "<<endl;
+			int t=s;
+			p.cost=0;
+			while(t!=d)
+			{
+				if((p.b<=((t+1)/2)*p.a) && (t/2>=d))
+				{t/=2;	p.cost+=p.b;}
+				else
+				{t--;	p.cost+=p.a;}
+			}
+			all[i]=p;
+		}//Input end;
+		for(i=1;i<num;i++)
+		{
+			p=all[i];
+			for(j=i-1;j>=0 && all[j].cost>p.cost;j--)
+			{
+				all[j+1]=all[j];
+			}
+			if((p.cost==all[j].cost) &&(p.name[0]<all[j].name[0]))
+			{all[j+1]=all[j];all[j]=p;}
+			else
+				all[j+1]=p;
+		}//sort endl;
+		cout<<"Case "<<c<<endl;
+		for(i=0;i<num;i++)
+		{
+			cout<<all[i].name<<" "<<all[i].cost<<endl;
+		}
+		delete[] all;
+
+	}
+
+	return 0 ;
+}

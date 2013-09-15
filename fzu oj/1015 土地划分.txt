@@ -1,0 +1,46 @@
+#include<iostream>
+using namespace std;
+
+class Point
+{
+public:
+	double x,
+		   y;
+};
+int w,h;
+double side(const Point & a, const Point & b, const Point & c) 
+{ return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); } 
+bool intersect(const Point& p1,const Point& p2,const Point& p3,const Point& p4)
+{
+	if(side(p1,p2,p3)*side(p1,p2,p4)<0)
+		return true;
+	return false;
+
+}
+int main()
+{
+	int l;
+	Point line[51];
+	
+	while(cin>>w>>h)
+	{
+		if(w==0 && h==0)break;
+		cin>>l;
+		int land=2;
+		cin>>line[0].x>>line[0].y>>line[1].x>>line[1].y;
+		for(int i=2;i<=l;i++)
+		{
+			cin>>line[i].x>>line[i].y;
+			for(int j=0;j<i-1;j++)
+			{
+				land+=intersect(line[j],line[j+1],line[i-1],line[i]);
+			}
+			land++;
+		}
+		cout<<land<<endl;
+		
+		
+	}
+
+	return 0;
+}

@@ -1,0 +1,92 @@
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<deque>
+#include<cstdlib>
+using namespace std;
+int ans;
+struct node
+{
+	int l,r,v;
+} a[600000];
+void build(int i,int left,int right)
+{
+	a[i].l=left;
+	a[i].r=right;
+	a[i].v=1;
+	if(left==right)
+		return ;
+	int mid=(left+right)>>1;
+	build(i*2,left,mid);
+	build(i*2+1,mid+1,right);
+}
+void modify(int i,int left,int right,int value)
+{
+	if(a[i].v<value)
+		a[i].v=value;
+	if(a[i].l==a[i].r)
+		return ;
+	int mid=(a[i].l+a[i].r)>>1;
+	if(right<=mid)
+		modify(i*2,left,right,value);
+	else
+		if(left>mid)
+			modify(i*2+1,left,right,value);
+	
+}
+void query(int i,int left,int right)
+{
+	if(a[i].l== left && a[i].r==right)
+	{
+		if(ans<a[i].v)
+			ans=a[i].v;
+		return;
+	}
+	int mid=(a[i].l+a[i].r)>>1;	
+	if(right<=mid)
+		query(i*2,left,right);
+	else
+		if(left>mid)
+			query(i*2+1,left,right);
+		else
+		{
+			query(i*2,left,mid);
+			query(i*2+1,mid+1,right);
+		}
+
+}
+int main()
+{
+	int n,m,i,tmp;
+	char oper;
+	while(scanf("%d%d",&n,&m)!=EOF)
+	{
+		build(1,1,n);
+		for(i=1;i<=n;i++)
+		{
+			scanf("%d",&tmp);
+			modify(1,i,i,tmp);
+		}
+		getchar();
+		while(m--)
+		{
+			oper=getchar();
+			if(oper=='U')
+			{
+				scanf("%d%d",&i,&tmp);
+				modify(1,i,i,tmp);
+			}
+			if(oper=='Q')
+			{
+				scanf("%d%d",&i,&tmp);
+				ans=0;
+				query(1,i,tmp);
+				printf("%d\n",ans);
+			}
+			getchar();
+		}
+	}
+	return 0;
+}

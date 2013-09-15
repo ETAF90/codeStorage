@@ -1,0 +1,52 @@
+#include<stdio.h>
+#define MOD 1000000007			//dp 题：f[i][j]表示i张票给j个人 f[i][j]=f[k][j-1],0<=k<=i;
+								//初始化f[i][0]=0; 若没有人则无法分
+								//初始化f[0][j]=1；若只有0张票则j个人每个人分0张，只有一种情况。
+int main()
+{
+	__int64 f[101][101],ans;			
+	int i,j,k,n,m;
+	for(i=0;i<=100;i++)
+	{
+		f[i][0]=0;
+	//	f[i][1]=1;
+	}
+	for(j=0;j<=100;j++)
+		f[0][j]=1;
+	//f[0][0]=1;
+	for(j=1;j<=100;j++)
+		for(i=1;i<=100;i++)
+		{
+			f[i][j]=0;
+			for(k=0;k<=i;k++)
+				f[i][j]=(f[i][j]+f[k][j-1])%MOD;
+
+		}	
+
+/*		for(i=0;i<=10;i++)
+	{
+	
+	for(j=0;j<=10;j++)
+			printf("%d ",f[i][j]);
+		printf("\n");
+
+	}
+*/
+	while(scanf("%d%d",&n,&m)!=EOF)
+	{
+		ans=0;
+		for(i=0;i<(n+1)>>1;i++)
+		{
+			ans=(ans+f[i][n-1])%MOD;
+		}
+		if(m!=-1)
+			printf("%I64d\n",ans);
+		else
+		{
+			ans=((f[n][n]+MOD)-(n*ans)%MOD)%MOD;	// 此处wa了好几次
+			printf("%I64d\n",ans);
+		}
+
+	}
+	return 0;
+}
