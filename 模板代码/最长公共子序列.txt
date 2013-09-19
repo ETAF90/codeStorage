@@ -1,0 +1,86 @@
+#include<iostream>
+#include<string>
+using namespace std;
+int c[1000][1000];
+int z[1000][1000];//记录状态	
+string a,b;
+
+/*
+int lcs(int i,int j)
+{
+	if(i==0 || j==0)
+		return 0;
+	if(a[i-1]==b[j-1])
+		return c[i-1][j-1]+1;
+	return c[i][j-1]>c[i-1][j]?c[i][j-1]:c[i-1][j];
+}
+*/
+int main()
+{
+
+	int n,m,i,j;
+	while(cin>>a>>b)
+	{
+	n=a.size();
+		m=b.size();
+		//dp非递归版
+			for(i=0;i<=n;i++)
+			c[i][0]=0;
+		for(j=0;j<=m;j++)
+			c[0][j]=0;
+		for(i=1;i<=n;i++)
+			for(j=1;j<=m;j++)
+			{
+				if(a[i-1]==b[j-1])
+				{
+					c[i][j]=c[i-1][j-1]+1; 
+					z[i][j]=0;
+				}
+				else
+					if(c[i][j-1]>c[i-1][j])
+					{
+						c[i][j]=c[i][j-1];
+						z[i][j]=1;
+					}
+					else
+					{
+						c[i][j]=c[i-1][j];
+						z[i][j]=-1;
+					}
+			}
+		cout<<c[n][m]<<endl;
+		// 逆向求最大公共子序列
+		string lsb;
+		i=n;j=m;
+			while(1)
+			{
+				if(i==0 || j==0)
+					break;
+				if(z[i][j]==0)
+				{
+					lsb+=a[i-1];
+					i--;j--;
+				}
+				if(z[i][j]==1)
+					j--;
+				if(z[i][j]==-1)
+					i--;
+			}
+		for(i=lsb.size()-1;i>=0;i--)
+			cout<<lsb[i];
+		cout<<endl;
+	/*
+	//dp递归版
+		for(i=0;i<=n;i++)
+			for(j=0;j<=m;j++)
+				c[i][j]=lcs(i,j);
+		cout<<c[n][m]<<endl;
+	*/
+
+	 }
+	
+
+
+	
+	return 0;
+}

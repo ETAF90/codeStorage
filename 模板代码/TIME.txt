@@ -1,0 +1,10 @@
+#include<ctime>
+clock_t t=clock();
+*
+*
+*
+*
+*
+
+
+cout<<double(clock()-t)/double(CLK_TCK)<<" seconds\n";

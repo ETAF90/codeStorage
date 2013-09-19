@@ -1,0 +1,33 @@
+#include<iostream>				// ¼ÆÊıÅÅĞò  O(n)Ëã·¨
+using namespace std;
+void count_sort(int a[],int n)
+{
+	int i;
+	int c[1000],b[1000];
+	memset(c,0,sizeof(c));
+	for(i=0;i<n;i++)
+		c[a[i]]++;
+	for(i=1;i<1000;i++)
+		c[i]+=c[i-1];
+	for(i=0;i<n;i++)
+	{
+		b[(c[a[i]]--)-1]=a[i];
+	}
+	for(i=0;i<n;i++)
+		a[i]=b[i];
+}
+int main()
+{
+	int n,i,a[10000];
+	while(scanf("%d",&n)!=EOF)
+	{
+		for(i=0;i<n;i++)
+			scanf("%d",a+i);
+		count_sort(a,n);
+		printf("count_sort:\n");
+		for(i=0;i<n;i++)
+			printf("%d ",a[i]);
+		printf("\n");
+	}
+	return 0;
+}

@@ -1,0 +1,23 @@
+#include<iostream>
+using namespace std;
+int qmod(int a,int b,int m)//·µ»Ø a^b mod m
+{
+	int r=1;
+	while(b>=1)
+	{
+		if(b%2==1)
+			r=r*a%m;
+		a=a*a%m;
+		b/=2;
+	}
+	return r;
+}
+int main()
+{
+	int a,b,m;
+	while(cin>>a>>b>>m)
+	{
+		cout<<qmod(a,b,m)<<endl;
+	}
+	return 0;
+}

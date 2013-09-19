@@ -1,0 +1,64 @@
+//--------------归并-----------------
+// 找出最小值和最大值的非递归程序
+template<typename T>
+bool MinMax(T w[],int n,T& Min,T& Max)
+{//n 代表n个元素;Min,Max分别为最大元素和最小元素的下标
+	if(n<1)return false;
+	if(n==1){Min=0;Max=0; return true;}
+	int i;//设置起点
+	if(n%2)//n为奇数
+	{
+		Min=0;
+		Max=0;
+		i=1;
+	}
+	else
+	{
+		if(w[0]>w[1])
+		{ Min=1; Max=0;}
+		else
+		{ Min=0;Max=1;}
+		i=2;
+	}
+	while(i<n)
+	{
+		if(w[i]>w[i+1])
+		{
+			if(w[i]>w[Max])
+				Max=i;
+			if(w[i+1]<w[Min])
+				Min=i+1;
+		}
+		else
+		{
+			if(w[i+1]>w[Max])
+				Max=i+1;
+			if(w[i]<w[Min])
+					Min=i;
+		}
+		i+=2;
+		
+	}
+	return true;
+}
+
+
+#include<iostream>
+#include<fstream>
+using namespace std;
+int main()
+{
+	int a[100];
+	ifstream fin("MergeSort.txt");
+	int n;
+	while(fin>> n)
+	{
+		for(int i=0;i<n;i++)
+			fin>>a[i];
+		int max,min;
+		if(MinMax(a,n,min,max));
+		cout<<a[max]<<" "<<a[min]<<endl;
+	}
+
+	return 0;
+}

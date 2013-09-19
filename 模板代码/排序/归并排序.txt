@@ -1,0 +1,76 @@
+template<typename T>
+void MergeSort(T a[],int n)
+{
+	T* b=new T[n];
+	int s=1;
+	while(s<n)
+	{
+		MergePass(a,b,s,n);
+		s+=s;
+		MergePass(b,a,s,n);
+		s+=s;
+	}
+	delete[] b;
+}
+template<typename T>
+void MergePass(T x[],T y[],int s,int n)
+{
+	int i=0;
+	while(i<=n-2*s)
+	{
+		Merge(x,y,i,i+s-1,i+2*s-1);
+		i+=2*s;
+	}
+	if(i+s<n)
+		Merge(x,y,i,i+s-1,n-1);
+	else
+		while(i<n)
+		{
+			y[i]=x[i++];
+		}
+		
+}
+template<typename T>
+void Merge(T c[],T d[],int l,int m,int r)
+{
+	int i=l,
+	j=m+1,
+	k=l;
+	while(i<=m && j<=r)
+	{
+		if(c[i]<=c[j])
+			d[k++]=c[i++];
+		else 
+			d[k++]=c[j++];
+	}
+	if(i>m)
+		while(j<=r)
+			d[k++]=c[j++];
+	else
+		while(i<=m)
+			d[k++]=c[i++];
+
+}
+#include<iostream>
+#include<fstream>
+#include<ctime>
+using namespace std;
+int main()
+{
+	int a[100];
+	int n,i;
+    ifstream fin("MergeSort.txt");
+	while(fin>>n)
+	{clock_t t=clock();
+		for(i=0;i<n;i++)
+		{
+			fin>>a[i];
+		}
+		MergeSort(a,n);
+		for(i=0;i<n;i++)
+			cout<<a[i]<<" ";
+		cout<<endl;
+		cout<<"time: "<<(double)(clock()-t)/(double)CLK_TCK<<" seconds\n";
+	}
+	return 0;
+}

@@ -1,0 +1,82 @@
+#include<iostream>
+#include<string>
+using namespace std;
+// gcd(a,b)=gcd(b, (a mod b))
+int gcd(int a,int b)      //欧几里得算法，非递归
+{
+	int r;
+	while(b)
+	{
+		r=a%b;
+		a=b;
+		b=r;
+	}
+	return a;
+} 
+int Gcd(int a,int b)    // 欧几里得算法，递归
+{
+	if(b)
+		return Gcd(b,a%b);
+	return a;
+}
+//--------------------------------------gcd()三种写法----------------------------------------------------------------------
+int fun1(int a,int b)
+{
+	int t;
+	while(a%b)
+	{
+		t=b;
+		b=a%b;
+		a=t;
+	}
+	return b;
+}
+int fun2(int a,int b)
+{
+	if(b)
+		return fun2(b,a%b);
+	else
+		return a;
+}
+int fun3(int a,int b)
+{
+	while(1)
+	{
+		if((a=a%b)==0)return b;
+		if((b=b%a)==0)return a;
+	}
+}
+//---------------------------------------------------------------------------------------------------------
+int extend_gcd(int a,int b,int& x,int& y)//返回最大公约数，并返回gcd(a,b)=a*x+b*y的系数x和y。
+{
+	if(b==0)							// d为最大公约数：d=a*x+b*y
+										//				  d=b*x'+(a mod b)*y'
+										//                d=b*x'+(a-a/b*b)*y'
+										//				  d=a*y'+b*(x'-a/b*y')
+										//				  x=y'
+										//			      y=x'-a/b*y'
+										//                递归可求x，y。
+	{
+		x=1;
+		y=0;
+		return a;
+	}
+	int r= extend_gcd(b,a%b,x,y);
+	int t=x;
+	x=y;
+	y=t-a/b*y;
+	return r;
+}
+
+int main()
+{
+	int a,b,x,y;
+	while(scanf("%d%d",&a,&b)!=EOF)
+	{
+		printf("%d %d\n",gcd(a,b),Gcd(a,b));
+		int d=extend_gcd(a,b,x,y);
+		printf("%d = %d * %d + %d * %d\n",d,a,x,b,y);
+	}
+
+	return 0;
+}

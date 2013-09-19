@@ -1,0 +1,39 @@
+/*
+
+组合数取模
+小规模性用公式： (K> 1) n, m <= 1000 (n * n 是可以接受的) 难度系数: 1
+
+递推！
+
+   c(n,m) =c(n - 1,m) + c(n – 1, m – 1)
+
+*/
+
+#include<iostream>
+using namespace std;
+int main()
+{
+	int n,m,k,i,j;
+	while(scanf("%d%d%d",&n,&m,&k)!=EOF)
+	{
+		int **F=new int* [n+1];
+		for(i=0;i<=n;i++)
+			F[i]=new int[m+1];
+		for(j=0;j<=m;j++)
+			F[j][j]=1;
+		for(i=0;i<=n;i++)
+		{F[i][0]=1;F[i][1]=i;}
+		for(i=1;i<=n;i++)
+			for(j=1;j<i && j<=m;j++)
+				F[i][j]=(F[i-1][j]%k+F[i-1][j-1]%k)%k;
+		
+		printf("%d\n",F[n][m]);
+	}
+	return 0;
+}/*
+	unsigned __int64 a,b,c;
+	while(scanf("%I64u%I64u%I64u",&a,&b,&c)!=EOF)
+	{
+
+	}
+*/

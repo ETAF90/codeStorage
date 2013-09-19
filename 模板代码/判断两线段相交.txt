@@ -1,0 +1,24 @@
+bool Interact(struct node a,struct node b,struct node c,struct node d)//叉乘法判断c,d为端点的线段是否在a,b线段所在的直线上
+{																	  //若要判断 (a,b)线段与(c,d)线段是否相交，则调用
+	double x1,y1,x2,y2,x3,y3,t;										  // Interact(a,b,c,d)&&Interact(c,d,a,b).		
+	x1=a.x-b.x;
+	y1=a.y-b.y;
+	x2=c.x-b.x;
+	y2=c.y-b.y;
+	x3=d.x-b.x;
+	y3=d.y-b.y;
+	t=(x1*y2-x2*y1)*(x1*y3-x3*y1);
+	if(t<0)
+		return true;
+	if((x1*y2-x2*y1)==0)
+	{
+		if(c.x>min(a.x,b.x) && c.x<max(a.x,b.x))
+			return true;
+	}
+	if((x1*y3-x3*y1)==0)
+	{
+		if(d.x>min(a.x,b.x) && d.x<max(a.x,b.x))
+			return true;
+	}
+	return false;
+}

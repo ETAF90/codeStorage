@@ -1,0 +1,61 @@
+#include<iostream>							//数组实现的堆排序
+using namespace std;
+void Initialize(int a[],int size)			//初始化
+{	
+	for(int i=size/2;i>=1;i--)				
+	{
+		int y=a[i];
+		int  c=2*i;
+		while(c<=size) 
+		{
+			if(c<size && a[c+1]<a[c])
+				c++;			
+			if(y<=a[c])
+				break;
+			a[c/2]=a[c];
+			c<<=1;
+		}
+		a[c/2]=y;
+	}
+}
+int Delete(int a[],int& size)
+{
+	int t=a[1],y;
+	y=a[size--];
+	int i=1,c=2;
+	while(c<=size)
+	{
+		if(c<size && a[c+1]<a[c])
+			c++;
+		if(y<=a[c])
+			break;
+		a[c/2]=a[c];
+		c<<=1;
+	}
+	a[c/2]=y;
+	return t;
+}
+
+int main()
+{
+	int a[10000];
+	int n,i,x;
+	while(scanf("%d",&n)!=EOF)
+	{
+		for(i=1;i<=n;i++)
+			scanf("%d",a+i);
+		Initialize(a,n);
+		printf("Initialized:\n");
+		for(i=1;i<=n;i++)
+			printf("%d ",a[i]);
+		printf("\n");
+		while(n)
+		{
+			x=Delete(a,n);
+			printf("%d ",x);
+
+		}
+		printf("\n");
+	}
+	return 0;
+}

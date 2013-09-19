@@ -1,0 +1,54 @@
+//-------------------快速排序(递归未消除)---------
+template<typename T>
+void QuickSort(T a[],int l,int r)
+{
+	if(l>=r)
+		return ;
+	int i=l,
+		j=r+1;
+	T pivot=a[l];
+	while(1)
+	{
+		do
+		{
+			i++;
+		}while(a[i]<pivot);
+		do
+		{
+			j--;
+		}while(a[j]>pivot);
+		if(i>=j)break;
+		int t=a[i];a[i]=a[j];a[j]=t;
+	}
+	a[l]=a[j];// 设置中点j。
+	a[j]=pivot;
+	QuickSort(a,l,j-1);
+	QuickSort(a,j+1,r);
+
+}
+
+#include<iostream>
+#include<fstream>
+#include<ctime>
+using namespace std;
+
+int main()
+{
+	
+	int a[100];
+	int n,i;
+    ifstream fin("MergeSort.txt");
+	while(fin>>n)
+	{
+		clock_t t=clock();
+		
+		for(i=0;i<n;i++)
+			fin>>a[i];
+		QuickSort(a,0,n-1);
+		for(i=0;i<n;i++)
+			cout<<a[i]<<" ";
+		cout<<endl;
+		cout<<"time: "<<(double)(clock()-t)/(double)CLK_TCK<<" seconds\n";
+	}
+	return 0;
+}

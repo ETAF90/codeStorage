@@ -1,0 +1,31 @@
+#include<iostream>
+#include<string>
+#include<iomanip>
+using namespace std;
+int main()
+{
+	char s[1002];
+	int a[200],r,t,i;
+	while(scanf("%s%d",s,&r))//输入大整数，求余r
+	{
+		//千进制转化
+		memset(a,0,sizeof(a));
+		int len=strlen(s);
+		for(i=0;i<len;i++)
+			a[(len-i+2)/3-1]=a[(len-i+2)/3-1]*10+s[i]-'0';
+		len=(len+2)/3;
+	/*	for(i=len-1;i>=0;i--)
+		{
+			cout<<setfill('0')<<setw(3)<<a[i]<<",";
+		}
+	*/
+		//求余
+		int ans=0;
+		for(i=len-1;i>=0;i--)
+		{
+			ans=(ans*1000+a[i])%r;
+		}
+		cout<<ans<<endl;
+	}
+	return 0;
+}
